@@ -78,6 +78,9 @@ The following are commonly used command-line flags for ToolUniverse MCP servers.
    --exclude-tool-types STR...    Exclude these tool types
    --tool-config-files TEXT       Mapping like "custom:/path/to/custom.json"
 
+   # Compact mode
+   --compact-mode                 Enable compact mode (only expose core tools)
+
    # Hooks
    --hooks-enabled                Enable hooks (default: False)
    --hook-type [SummarizationHook|FileSaveHook]
@@ -93,6 +96,7 @@ The following are commonly used command-line flags for ToolUniverse MCP servers.
    --tools-file PATH              File with one tool name per line
    --include-tool-types STR...    Include only these tool types
    --exclude-tool-types STR...    Exclude these tool types
+   --compact-mode                 Enable compact mode (only expose core tools)
    --hooks                        Enable hooks (default: disabled for stdio)
    --hook-type [SummarizationHook|FileSaveHook]
    --hook-config-file PATH        JSON config for hooks
@@ -424,6 +428,7 @@ MCP Tutorials and Guides
 Advanced Features
 ~~~~~~~~~~~~~~~~~
 
+- :doc:`compact_mode` - Optimize context window usage by exposing only core tools
 - :doc:`hooks/server_stdio_hooks` - Output processing hooks for MCP servers
 - :doc:`scientific_workflows` - Building complex workflows with MCP
 - :doc:`tool_composition` - Composing tools for advanced research

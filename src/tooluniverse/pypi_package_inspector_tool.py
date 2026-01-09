@@ -8,38 +8,38 @@ from .tool_registry import register_tool
 from .base_tool import BaseTool
 
 
-@register_tool(
-    "PyPIPackageInspector",
-    config={
-        "name": "PyPIPackageInspector",
-        "type": "PyPIPackageInspector",
-        "description": (
-            "Extracts comprehensive package information from PyPI and GitHub "
-            "for quality evaluation. Provides detailed metrics on popularity, "
-            "maintenance, security, and compatibility."
-        ),
-        "parameter": {
-            "type": "object",
-            "properties": {
-                "package_name": {
-                    "type": "string",
-                    "description": "Name of the Python package to inspect",
-                },
-                "include_github": {
-                    "type": "boolean",
-                    "description": "Whether to fetch GitHub statistics",
-                    "default": True,
-                },
-                "include_downloads": {
-                    "type": "boolean",
-                    "description": "Whether to fetch download statistics",
-                    "default": True,
-                },
-            },
-            "required": ["package_name"],
-        },
-    },
-)
+# @register_tool(
+#     "PyPIPackageInspector",
+#     config={
+#         "name": "PyPIPackageInspector",
+#         "type": "PyPIPackageInspector",
+#         "description": (
+#             "Extracts comprehensive package information from PyPI and GitHub "
+#             "for quality evaluation. Provides detailed metrics on popularity, "
+#             "maintenance, security, and compatibility."
+#         ),
+#         "parameter": {
+#             "type": "object",
+#             "properties": {
+#                 "package_name": {
+#                     "type": "string",
+#                     "description": "Name of the Python package to inspect",
+#                 },
+#                 "include_github": {
+#                     "type": "boolean",
+#                     "description": "Whether to fetch GitHub statistics",
+#                     "default": True,
+#                 },
+#                 "include_downloads": {
+#                     "type": "boolean",
+#                     "description": "Whether to fetch download statistics",
+#                     "default": True,
+#                 },
+#             },
+#             "required": ["package_name"],
+#         },
+#     },
+# )
 class PyPIPackageInspector(BaseTool):
     """
     Extracts comprehensive package information from PyPI and GitHub.
@@ -556,8 +556,7 @@ class PyPIPackageInspector(BaseTool):
             github_data = {}
             if include_github and pypi_data.get("github_url"):
                 print(
-                    f"  🐙 Fetching GitHub statistics from "
-                    f"{pypi_data['github_url']}..."
+                    f"  🐙 Fetching GitHub statistics from {pypi_data['github_url']}..."
                 )
                 github_data = self._get_github_stats(pypi_data["github_url"])
                 time.sleep(0.5)  # Rate limiting
@@ -580,8 +579,7 @@ class PyPIPackageInspector(BaseTool):
             }
 
             print(
-                f"✅ Inspection complete - Overall score: "
-                f"{scores['overall_score']}/100"
+                f"✅ Inspection complete - Overall score: {scores['overall_score']}/100"
             )
 
             return result

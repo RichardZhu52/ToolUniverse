@@ -1,7 +1,7 @@
 """
 UniProt_get_entry_by_accession
 
-Get the complete JSON entry for a specified UniProtKB accession.
+Get the complete JSON entry for a specified UniProtKB accession. WARNING: This tool returns the c...
 """
 
 from typing import Any, Optional, Callable
@@ -16,7 +16,7 @@ def UniProt_get_entry_by_accession(
     validate: bool = True,
 ) -> Any:
     """
-    Get the complete JSON entry for a specified UniProtKB accession.
+    Get the complete JSON entry for a specified UniProtKB accession. WARNING: This tool returns the c...
 
     Parameters
     ----------

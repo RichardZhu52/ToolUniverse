@@ -121,6 +121,61 @@ To provide API keys or other secrets to the server, use the `env` block.
 - `--hook-type SummarizationHook`: Enables output summarization for better readability
 - `AZURE_OPENAI_API_KEY` and `AZURE_OPENAI_ENDPOINT`: Required for SummarizationHook functionality
 
+#### Using Space Configuration (Recommended for Gemini CLI)
+
+**Important**: Gemini CLI has a 500 tool limit. To stay within this limit while accessing essential scientific tools, use the pre-configured `gemini-essential.yaml` Space:
+
+```json
+{
+  "mcpServers": {
+    "tooluniverse": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/path/to/tooluniverse-env",
+        "run",
+        "tooluniverse-smcp-stdio",
+        "--load",
+        "./examples/spaces/gemini-essential.yaml"
+      ]
+    }
+  }
+}
+```
+
+**Benefits of gemini-essential.yaml**:
+- **Under 500 tools**: Carefully selected ~400-450 essential tools, well within Gemini CLI's limit
+- **Comprehensive coverage**: Includes core databases (FDA, OpenTargets, UniProt, PubChem), literature search tools, clinical data, structural biology, and genomics tools
+- **Excludes unnecessary tools**: Automatically excludes agentic tools, MCP auto-loaders, and package info tools
+- **Ready to use**: No need to manually configure tool selection
+
+#### Using Compact Mode (Alternative for Minimal Context Usage)
+
+For maximum context window efficiency, use compact mode which exposes only 4-5 core tools:
+
+```json
+{
+  "mcpServers": {
+    "tooluniverse": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/path/to/tooluniverse-env",
+        "run",
+        "tooluniverse-smcp-stdio",
+        "--compact-mode"
+      ]
+    }
+  }
+}
+```
+
+**Compact Mode Benefits**:
+- **99% reduction**: Only 4-5 tools exposed instead of 750+
+- **Full functionality**: All tools still accessible via `execute_tool`
+- **Minimal context usage**: Ideal for AI agents with limited context windows
+- **Progressive disclosure**: Use `list_tools`, `grep_tools`, and `get_tool_info` to discover tools on demand
+
 #### Tool Filtering
 If you want to use only specific ToolUniverse tools to reduce overhead:
 
@@ -371,6 +426,7 @@ For containerized environments, you can configure the server to run inside Docke
 ## Performance Tips
 
 - **Tool Selection**: Use `includeTools` to load only the tools you need for a specific task.
+- **Gemini CLI 500 Tool Limit**: Use `gemini-essential.yaml` Space configuration or compact mode to stay within limits.
 - **Timeout Configuration**: Set appropriate timeouts based on expected API response times.
 - **Connection Persistence**: The CLI maintains persistent connections to reduce startup overhead.
 - **Caching**: Some ToolUniverse tools may implement caching to improve performance on repeated queries.

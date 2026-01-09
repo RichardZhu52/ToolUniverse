@@ -9,7 +9,7 @@ from ._shared_client import get_shared_client
 
 
 def ToolMetadataStandardizer(
-    metadata_list: list[Any],
+    metadata_list: list[str],
     limit: Optional[int] = None,
     *,
     stream_callback: Optional[Callable[[str], None]] = None,
@@ -21,7 +21,7 @@ def ToolMetadataStandardizer(
 
     Parameters
     ----------
-    metadata_list : list[Any]
+    metadata_list : list[str]
         List of raw metadata strings (e.g., sources, tags) to standardize and group.
     limit : int
         If provided, the maximum number of canonical strings to return. The LLM will ...

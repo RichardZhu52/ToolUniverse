@@ -73,6 +73,11 @@ class BasePythonExecutor:
         "fractions",
         "statistics",
         "random",
+        # Mathematical computing libraries
+        "sympy",
+        "numpy",
+        "scipy",
+        "matplotlib",
     }
 
     # Forbidden AST node types and their dangerous attributes
@@ -534,8 +539,7 @@ class PythonCodeExecutor(BasePythonExecutor, BaseTool):
             if not is_safe:
                 return self._format_error_response(
                     ValueError(
-                        f"Code contains forbidden operations: "
-                        f"{', '.join(ast_warnings)}"
+                        f"Code contains forbidden operations: {', '.join(ast_warnings)}"
                     ),
                     "SecurityError",
                     execution_time=0,
@@ -606,9 +610,7 @@ class PythonCodeExecutor(BasePythonExecutor, BaseTool):
             except TimeoutError:
                 execution_time = time.time() - start_time
                 return self._format_error_response(
-                    TimeoutError(
-                        f"Code execution timed out after " f"{timeout} seconds"
-                    ),
+                    TimeoutError(f"Code execution timed out after {timeout} seconds"),
                     "TimeoutError",
                     execution_time=execution_time,
                 )
@@ -719,7 +721,7 @@ class PythonScriptRunner(BasePythonExecutor, BaseTool):
                 else:
                     return self._format_error_response(
                         RuntimeError(
-                            f"Script failed with exit code " f"{result.returncode}"
+                            f"Script failed with exit code {result.returncode}"
                         ),
                         "RuntimeError",
                         result.stdout,
@@ -730,9 +732,7 @@ class PythonScriptRunner(BasePythonExecutor, BaseTool):
             except subprocess.TimeoutExpired:
                 execution_time = time.time() - start_time
                 return self._format_error_response(
-                    TimeoutError(
-                        f"Script execution timed out after " f"{timeout} seconds"
-                    ),
+                    TimeoutError(f"Script execution timed out after {timeout} seconds"),
                     "TimeoutError",
                     execution_time=execution_time,
                 )

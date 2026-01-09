@@ -23,7 +23,7 @@ def ChEMBL_search_similar_molecules(
     Parameters
     ----------
     query : str
-        SMILES string, chembl_id, or compound or drug name.
+        SMILES string, chembl_id, or compound or drug name. Note: Only small molecule...
     similarity_threshold : int
         Similarity threshold (0–100).
     max_results : int

@@ -115,11 +115,12 @@ SPACE_SCHEMA = {
             "properties": {
                 "mode": {
                     "type": "string",
-                    "enum": ["default", "fallback"],
+                    "enum": ["default", "fallback", "env_override"],
                     "default": "default",
                     "description": 'LLM configuration mode - "default" uses this '
                     'config as primary, "fallback" uses as backup '
-                    "when primary fails",
+                    'when primary fails, "env_override" gives environment '
+                    "variables highest priority",
                 },
                 "default_provider": {
                     "type": "string",

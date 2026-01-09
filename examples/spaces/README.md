@@ -272,6 +272,12 @@ llm_config:
 
 **Use case**: You want to standardize LLM settings across all tools.
 
+**Note for vLLM**: When using `default_provider: "VLLM"`, you must also set the `VLLM_SERVER_URL` environment variable:
+```bash
+export VLLM_SERVER_URL=http://your-vllm-server:8000
+```
+See the `docs/guide/vllm_support.rst` guide for complete vLLM setup instructions.
+
 ### Fallback Mode
 Space LLM config as backup when tool's API fails:
 
@@ -287,6 +293,41 @@ llm_config:
 **Priority**: Built-in default, then fallback to Space if API unavailable
 
 **Use case**: Tools have specific LLM preferences, but you want a reliable fallback.
+
+### Environment Override Mode
+Environment variables have highest priority, overriding both tool configs and Space configs:
+
+```yaml
+llm_config:
+  mode: "env_override"  # Environment variables override everything
+  default_provider: "CHATGPT"  # Used only if env vars not set
+  models:
+    default: "gpt-4o"  # Used only if env vars not set
+  temperature: 0.3
+```
+
+**Priority**: Environment variables > Tool config > Space config > Built-in default
+
+**Use case**: You want to override all LLM settings via environment variables (e.g., for different deployments, testing, or when using vLLM with custom models).
+
+**Example with vLLM**:
+```bash
+# Set environment variables to override all configs with vLLM
+export TOOLUNIVERSE_LLM_CONFIG_MODE=env_override
+export TOOLUNIVERSE_LLM_DEFAULT_PROVIDER=VLLM
+export TOOLUNIVERSE_LLM_MODEL_DEFAULT=meta-llama/Llama-3.1-8B-Instruct
+export VLLM_SERVER_URL=http://localhost:8000
+export TOOLUNIVERSE_LLM_TEMPERATURE=0.7
+```
+
+**Example with other providers**:
+```bash
+# Override with OpenRouter
+export TOOLUNIVERSE_LLM_CONFIG_MODE=env_override
+export TOOLUNIVERSE_LLM_DEFAULT_PROVIDER=OPENROUTER
+export TOOLUNIVERSE_LLM_MODEL_DEFAULT=openai/gpt-5
+export OPENROUTER_API_KEY=your-key-here
+```
 
 ## Configuration Structure
 

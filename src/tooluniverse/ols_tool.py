@@ -358,7 +358,9 @@ class OLSTool(BaseTool):
             else:
                 embedded = data.get("_embedded")
                 if isinstance(embedded, dict):
-                    for key in ("terms", "children", "ancestors"):
+                    # OLS responses can use different embedded keys depending on endpoint/version.
+                    # Keep this list conservative but inclusive for OLS4 v2 term hierarchy endpoints.
+                    for key in ("terms", "children", "ancestors", "classes"):
                         if key in embedded and isinstance(embedded[key], list):
                             elements = embedded[key]
                             break
@@ -403,14 +405,31 @@ class OLSTool(BaseTool):
 
     @staticmethod
     def _build_term_model(item: Dict[str, Any]) -> Optional[TermInfo]:
+        # OLS4 v2 endpoints may represent the identifier as `iri`, `@id`, or `id`.
+        iri = item.get("iri") or item.get("@id") or item.get("id")
+        # OLS4 v2 often returns `label` as a list (e.g. ["lymphocyte"]).
+        label = item.get("label")
+        if isinstance(label, list):
+            label = next(
+                (val for val in label if isinstance(val, str) and val.strip()), ""
+            )
+        elif isinstance(label, str):
+            label = label
+        else:
+            label = ""
+
+        # Prefer CURIE if present (more human-friendly), otherwise fall back to shortForm.
+        short_form = (
+            item.get("curie") or item.get("shortForm") or item.get("short_form") or ""
+        )
         payload = {
-            "iri": item.get("iri"),
+            "iri": iri,
             "ontology_name": item.get("ontologyName")
             or item.get("ontology_name")
             or item.get("ontologyId")
             or "",
-            "short_form": item.get("shortForm") or item.get("short_form") or "",
-            "label": item.get("label") or "",
+            "short_form": short_form,
+            "label": label,
             "oboId": item.get("oboId") or item.get("obo_id"),
             "isObsolete": item.get("isObsolete") or item.get("is_obsolete", False),
         }

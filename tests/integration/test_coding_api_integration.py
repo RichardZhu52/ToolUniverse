@@ -34,6 +34,7 @@ class TestCodingAPIIntegration(unittest.TestCase):
     
     def tearDown(self):
         """Clean up test fixtures."""
+        self.tu.close()
         shutil.rmtree(self.temp_dir)
     
     def test_dynamic_calling_integration(self):
@@ -194,6 +195,7 @@ class TestSDKIntegration(unittest.TestCase):
     
     def tearDown(self):
         """Clean up test fixtures."""
+        self.tu.close()
         if self.temp_dir in sys.path:
             sys.path.remove(self.temp_dir)
         shutil.rmtree(self.temp_dir)
@@ -261,6 +263,7 @@ class TestEndToEndIntegration(unittest.TestCase):
     
     def tearDown(self):
         """Clean up test fixtures."""
+        self.tu.close()
         shutil.rmtree(self.temp_dir)
     
     def test_dynamic_to_sdk_workflow(self):

@@ -10,6 +10,7 @@ from ._shared_client import get_shared_client
 
 def ensembl_lookup_gene(
     gene_id: str,
+    species: Optional[str] = None,
     *,
     stream_callback: Optional[Callable[[str], None]] = None,
     use_cache: bool = False,
@@ -22,6 +23,8 @@ def ensembl_lookup_gene(
     ----------
     gene_id : str
         Ensembl gene ID or symbol (e.g., 'ENSG00000139618' or 'BRCA1')
+    species : str
+        Species name required for gene symbols (default 'homo_sapiens')
     stream_callback : Callable, optional
         Callback for streaming output
     use_cache : bool, default False
@@ -36,7 +39,10 @@ def ensembl_lookup_gene(
     # Handle mutable defaults to avoid B006 linting error
 
     return get_shared_client().run_one_function(
-        {"name": "ensembl_lookup_gene", "arguments": {"gene_id": gene_id}},
+        {
+            "name": "ensembl_lookup_gene",
+            "arguments": {"gene_id": gene_id, "species": species},
+        },
         stream_callback=stream_callback,
         use_cache=use_cache,
         validate=validate,

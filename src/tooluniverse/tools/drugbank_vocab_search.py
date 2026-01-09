@@ -10,7 +10,7 @@ from ._shared_client import get_shared_client
 
 def drugbank_vocab_search(
     query: str,
-    search_fields: list[Any],
+    search_fields: list[str],
     case_sensitive: bool,
     exact_match: bool,
     limit: int,
@@ -26,7 +26,7 @@ def drugbank_vocab_search(
     ----------
     query : str
         Search query string. Can be drug name, synonym, DrugBank ID, or any text to s...
-    search_fields : list[Any]
+    search_fields : list[str]
         Fields to search in. Available fields: 'DrugBank ID', 'Accession Numbers', 'C...
     case_sensitive : bool
         Whether the search should be case sensitive.

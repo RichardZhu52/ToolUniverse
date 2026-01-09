@@ -1,7 +1,7 @@
 """
 advanced_literature_search_agent
 
-Advanced multi-agent literature search system. Required pipeline: (1) query_planner must produce ...
+Advanced multi-agent deep literature search system. This is a SEARCH-FIRST system: agents must ex...
 """
 
 from typing import Any, Optional, Callable
@@ -16,7 +16,7 @@ def advanced_literature_search_agent(
     validate: bool = True,
 ) -> Any:
     """
-    Advanced multi-agent literature search system. Required pipeline: (1) query_planner must produce ...
+    Advanced multi-agent deep literature search system. This is a SEARCH-FIRST system: agents must ex...
 
     Parameters
     ----------

@@ -10,7 +10,7 @@ from ._shared_client import get_shared_client
 
 def dict_search(
     query: str,
-    search_fields: list[Any],
+    search_fields: list[str],
     case_sensitive: bool,
     exact_match: bool,
     limit: int,
@@ -26,7 +26,7 @@ def dict_search(
     ----------
     query : str
         Free-text query (e.g. 'ZYPREXA', 'Olanzapine').
-    search_fields : list[Any]
+    search_fields : list[str]
         Columns to search. Choose from: 'Trade Name', 'Generic/Proper Name(s)', 'Acti...
     case_sensitive : bool
         Match text with exact case if true.

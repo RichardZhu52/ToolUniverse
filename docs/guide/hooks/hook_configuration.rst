@@ -50,6 +50,76 @@ Use `hook_config` for detailed control:
 
 When both `hook_type` and `hook_config` are provided, `hook_config` takes precedence.
 
+Excluding Tools from Hook Processing
+-------------------------------------
+
+**exclude_tools Configuration**
+
+Use `exclude_tools` to prevent specific tools from being processed by hooks. This is useful for excluding tool discovery tools (like Tool_RAG) and other special tools that shouldn't be summarized.
+
+**Default Excluded Tools**
+
+The default configuration excludes these tools:
+
+- `Tool_RAG` - Embedding-based tool finder
+- `ToolFinderEmbedding` - Tool discovery tool
+- `ToolFinderLLM` - LLM-based tool finder
+- `ToolOutputSummarizer` - Hook tool (always excluded)
+- `OutputSummarizationComposer` - Hook tool (always excluded)
+
+**Custom Exclude Tools**
+
+.. code-block:: json
+
+   {
+     "exclude_tools": [
+       "Tool_RAG",
+       "ToolFinderEmbedding",
+       "MyCustomTool",
+       "SpecialTool_*"
+     ],
+     "hooks": [...]
+   }
+
+**Wildcard Patterns**
+
+You can use wildcard patterns to exclude multiple tools:
+
+.. code-block:: json
+
+   {
+     "exclude_tools": [
+       "Tool_*",      # Excludes all tools starting with "Tool_"
+       "Finder*",     # Excludes all tools starting with "Finder"
+       "CustomTool_*" # Excludes all tools starting with "CustomTool_"
+     ]
+   }
+
+**Python Configuration**
+
+.. code-block:: python
+
+   hook_config = {
+       "exclude_tools": [
+           "Tool_RAG",
+           "ToolFinderEmbedding",
+           "CustomTool_*"  # Wildcard pattern
+       ],
+       "hooks": [{
+           "name": "summarization_hook",
+           "type": "SummarizationHook",
+           "enabled": True
+       }]
+   }
+
+   tu = ToolUniverse(hooks_enabled=True, hook_config=hook_config)
+
+**Why Exclude Tools?**
+
+- **Prevent Recursive Processing**: Hook tools themselves are excluded to avoid infinite loops
+- **Performance**: Skip unnecessary processing for tool discovery tools
+- **Correctness**: Some tools produce outputs that shouldn't be summarized (e.g., tool lists)
+
 Configuration Structure
 -----------------------
 
@@ -63,7 +133,12 @@ Configuration Structure
        "max_hook_depth": 3,
        "enable_hook_caching": true,
        "hook_execution_order": "priority_desc"
-     }
+     },
+     "exclude_tools": [
+       "Tool_RAG",
+       "ToolFinderEmbedding",
+       "ToolFinderLLM"
+     ]
    }
 
 **Hook Type Defaults**
@@ -300,6 +375,22 @@ Enable caching for better performance:
      }
    }
 
+**Excluding Tools**
+
+Exclude tool discovery and special tools:
+
+.. code-block:: json
+
+   {
+     "exclude_tools": [
+       "Tool_RAG",
+       "ToolFinderEmbedding",
+       "ToolFinderLLM"
+     ]
+   }
+
+This prevents unnecessary processing and avoids recursive hook calls.
+
 **Auto-Cleanup**
 
 Enable auto-cleanup for file-based hooks:
@@ -329,6 +420,7 @@ Best Practices
 2. **Set Appropriate Thresholds**: Avoid unnecessary processing
 3. **Enable Caching**: Reduce redundant operations
 4. **Monitor Resource Usage**: Track memory and disk usage
+5. **Exclude Unnecessary Tools**: Use `exclude_tools` to skip tool discovery tools
 
 **Error Handling**
 
@@ -380,6 +472,7 @@ Troubleshooting
 - Verify hook is enabled
 - Confirm tool name matching
 - Review condition parameters
+- Check if tool is in `exclude_tools` list (excluded tools won't trigger hooks)
 
 **Performance Problems**
 - Use tool-specific hooks

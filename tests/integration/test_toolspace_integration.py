@@ -86,22 +86,24 @@ llm_config:
             
             # Test ToolUniverse with Space
             tu = ToolUniverse()
-            
-            # Load Space configuration
-            config = tu.load_space(f.name)
-            
-            # Verify configuration is loaded
-            assert config['name'] == 'ToolUniverse Integration Test'
-            assert config['version'] == '1.0.0'
-            assert 'tools' in config
-            assert 'llm_config' in config
-            
-            # Verify tools are actually loaded in ToolUniverse
-            assert len(tu.all_tools) > 0
-            
-            # Verify LLM configuration is applied
-            assert os.environ.get('TOOLUNIVERSE_LLM_DEFAULT_PROVIDER') == 'CHATGPT'
-            assert os.environ.get('TOOLUNIVERSE_LLM_TEMPERATURE') == '0.7'
+            try:
+                # Load Space configuration
+                config = tu.load_space(f.name)
+                
+                # Verify configuration is loaded
+                assert config['name'] == 'ToolUniverse Integration Test'
+                assert config['version'] == '1.0.0'
+                assert 'tools' in config
+                assert 'llm_config' in config
+                
+                # Verify tools are actually loaded in ToolUniverse
+                assert len(tu.all_tools) > 0
+                
+                # Verify LLM configuration is applied
+                assert os.environ.get('TOOLUNIVERSE_LLM_DEFAULT_PROVIDER') == 'CHATGPT'
+                assert os.environ.get('TOOLUNIVERSE_LLM_TEMPERATURE') == '0.7'
+            finally:
+                tu.close()
         
         # Clean up
         Path(f.name).unlink()
@@ -127,12 +129,15 @@ llm_config:
             
             # Test LLM configuration application
             tu = ToolUniverse()
-            tools = tu.load_space(f.name)
-            
-            # Verify environment variables are set
-            assert os.environ.get('TOOLUNIVERSE_LLM_DEFAULT_PROVIDER') == 'CHATGPT'
-            assert os.environ.get('TOOLUNIVERSE_LLM_TEMPERATURE') == '0.8'
-            assert os.environ.get('TOOLUNIVERSE_LLM_MODEL_DEFAULT') == 'gpt-4o'
+            try:
+                tools = tu.load_space(f.name)
+                
+                # Verify environment variables are set
+                assert os.environ.get('TOOLUNIVERSE_LLM_DEFAULT_PROVIDER') == 'CHATGPT'
+                assert os.environ.get('TOOLUNIVERSE_LLM_TEMPERATURE') == '0.8'
+                assert os.environ.get('TOOLUNIVERSE_LLM_MODEL_DEFAULT') == 'gpt-4o'
+            finally:
+                tu.close()
         
         # Clean up
         Path(f.name).unlink()
@@ -188,11 +193,14 @@ hooks:
             
             # Test ToolUniverse with hooks
             tu = ToolUniverse()
-            tools = tu.load_space(f.name)
-            
-            # Verify hooks are configured
-            assert len(tools) > 0
-            # Note: Hook verification would require checking ToolUniverse's internal state
+            try:
+                tools = tu.load_space(f.name)
+                
+                # Verify hooks are configured
+                assert len(tools) > 0
+                # Note: Hook verification would require checking ToolUniverse's internal state
+            finally:
+                tu.close()
         
         # Clean up
         Path(f.name).unlink()
@@ -215,10 +223,13 @@ required_env:
             
             # Test ToolUniverse with required_env
             tu = ToolUniverse()
-            tools = tu.load_space(f.name)
-            
-            # Verify tools are loaded (required_env is for documentation only)
-            assert len(tools) > 0
+            try:
+                tools = tu.load_space(f.name)
+                
+                # Verify tools are loaded (required_env is for documentation only)
+                assert len(tools) > 0
+            finally:
+                tu.close()
         
         # Clean up
         Path(f.name).unlink()

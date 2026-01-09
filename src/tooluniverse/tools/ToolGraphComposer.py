@@ -12,7 +12,7 @@ def ToolGraphComposer(
     output_path: str,
     analysis_depth: str,
     min_compatibility_score: int,
-    exclude_categories: list[Any],
+    exclude_categories: list[str],
     max_tools_per_category: int,
     force_rebuild: bool,
     *,
@@ -31,7 +31,7 @@ def ToolGraphComposer(
         Level of compatibility analysis to perform
     min_compatibility_score : int
         Minimum compatibility score to create an edge in the graph
-    exclude_categories : list[Any]
+    exclude_categories : list[str]
         Tool categories to exclude from analysis (e.g., ['tool_finder', 'special_tool...
     max_tools_per_category : int
         Maximum number of tools to analyze per category (for performance)

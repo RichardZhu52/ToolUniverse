@@ -10,7 +10,7 @@ from ._shared_client import get_shared_client
 
 def HPA_get_rna_expression_in_specific_tissues(
     ensembl_id: str,
-    tissue_names: list[Any],
+    tissue_names: list[str],
     *,
     stream_callback: Optional[Callable[[str], None]] = None,
     use_cache: bool = False,
@@ -23,7 +23,7 @@ def HPA_get_rna_expression_in_specific_tissues(
     ----------
     ensembl_id : str
         Ensembl Gene ID for the gene, e.g., 'ENSG00000141510' for TP53.
-    tissue_names : list[Any]
+    tissue_names : list[str]
         List of tissue names to query, e.g., ['brain', 'liver', 'heart muscle', 'kidn...
     stream_callback : Callable, optional
         Callback for streaming output

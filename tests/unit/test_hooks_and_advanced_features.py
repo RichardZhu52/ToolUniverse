@@ -35,6 +35,11 @@ class TestHooksAndAdvancedFeatures(unittest.TestCase):
         self.tu.all_tools = []
         self.tu.all_tool_dict = {}
     
+    def tearDown(self):
+        """Tear down test fixtures."""
+        if hasattr(self, 'tu'):
+            self.tu.close()
+    
     def test_hook_toggle_functionality(self):
         """Test that hook toggle actually works."""
         # Test enabling hooks

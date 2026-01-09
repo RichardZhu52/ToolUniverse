@@ -205,6 +205,54 @@ def evaluate_function_call(tool_definition, function_call):
                         expected_type = type_option["type"]
                         break
 
+            # Case 3: Complex schema with "oneOf" (e.g., string or array)
+            elif "oneOf" in param_schema:
+                # For oneOf, we need to check if the value matches any of the types
+                # Extract all non-null types from oneOf
+                one_of_types = []
+                for type_option in param_schema["oneOf"]:
+                    if type_option.get("type") and type_option["type"] != "null":
+                        one_of_types.append(type_option["type"])
+
+                # Check if value matches any of the oneOf types
+                value_matches = False
+                for one_of_type in one_of_types:
+                    if one_of_type == "array" and isinstance(value, list):
+                        # For array type, also check items if specified
+                        items_schema = None
+                        for type_option in param_schema["oneOf"]:
+                            if type_option.get("type") == "array":
+                                items_schema = type_option.get("items", {})
+                                break
+                        # If items schema exists, validate items (simplified check)
+                        if items_schema:
+                            items_type = items_schema.get("type", "string")
+                            if all(
+                                isinstance(item, type_map.get(items_type, str))
+                                for item in value
+                            ):
+                                value_matches = True
+                                break
+                        else:
+                            value_matches = True
+                            break
+                    elif one_of_type in type_map and isinstance(
+                        value, type_map[one_of_type]
+                    ):
+                        value_matches = True
+                        break
+
+                if value_matches:
+                    # Value matches one of the oneOf types, validation passes - skip to next parameter
+                    continue
+                else:
+                    # Value doesn't match any oneOf type
+                    type_mismatches.append(
+                        (param, f"oneOf{one_of_types}", type(value).__name__)
+                    )
+                    # Continue to next parameter (don't fall through to expected_type check)
+                    continue
+
             # If we still don't have a type, skip validation for this parameter
             if not expected_type:
                 continue

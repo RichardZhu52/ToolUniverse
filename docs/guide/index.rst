@@ -20,6 +20,7 @@ Core Concepts
 * **🐍 Coding API** → :doc:`coding_api` - Import and call tools like normal Python functions with type safety
 * **🔬 Scientific Workflows** → :doc:`scientific_workflows` - Real-world research scenarios: drug discovery, safety analysis, literature review
 * **📡 MCP Support** → :doc:`mcp_support` - Model Context Protocol integration and server setup
+* **📦 Compact Mode** → :doc:`compact_mode` - Optimize context window usage by exposing only core tools (4 tools) while maintaining full functionality
 * **🔊 Streaming Tools** → :doc:`streaming_tools` - Real-time streaming output and custom tool integration
 * **📝 Logging** → :doc:`logging` - Comprehensive logging configuration and debugging
 * **🗃️ Result Caching** → :doc:`cache_system` - Configure in-memory and persistent caches for tool results
@@ -42,6 +43,12 @@ Building AI Scientists
   * **🧠 Qwen Code** → :doc:`building_ai_scientists/qwen_code` - AI scientist integration with Qwen Code environment
   * **⚡ Codex CLI** → :doc:`building_ai_scientists/codex_cli` - Terminal-based AI scientist with Codex CLI
   * **🎯 ChatGPT API** → :doc:`building_ai_scientists/chatgpt_api` - Programmatic scientific research with ChatGPT function calling
+
+LLM Providers
+-------------
+
+* **🚀 vLLM Support** → :doc:`vllm_support` - Use self-hosted LLM models with vLLM for high-performance inference
+* **🌐 OpenRouter Support** → :doc:`openrouter_support` - Access multiple LLM providers through OpenRouter API
 
 Advanced Features
 -----------------

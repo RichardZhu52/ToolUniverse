@@ -9,7 +9,7 @@ from ._shared_client import get_shared_client
 
 
 def ADMETAI_predict_physicochemical_properties(
-    smiles: list[Any],
+    smiles: list[str],
     *,
     stream_callback: Optional[Callable[[str], None]] = None,
     use_cache: bool = False,
@@ -20,7 +20,7 @@ def ADMETAI_predict_physicochemical_properties(
 
     Parameters
     ----------
-    smiles : list[Any]
+    smiles : list[str]
         The list of SMILES strings.
     stream_callback : Callable, optional
         Callback for streaming output

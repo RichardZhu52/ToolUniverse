@@ -1,7 +1,7 @@
 """
 embedding_sync_upload
 
-Upload a local embedding database to HuggingFace Hub for sharing and collaboration. Creates a dat...
+Upload a per-collection datastore to Hugging Face Hub: <name>.db and <name>.faiss, plus metadata ...
 """
 
 from typing import Any, Optional, Callable
@@ -9,32 +9,32 @@ from ._shared_client import get_shared_client
 
 
 def embedding_sync_upload(
-    action: str,
     database_name: str,
     repository: str,
-    description: str,
-    private: bool,
-    commit_message: str,
+    action: Optional[str] = None,
+    description: Optional[str] = "",
+    private: Optional[bool] = False,
+    commit_message: Optional[str] = "Upload datastore",
     *,
     stream_callback: Optional[Callable[[str], None]] = None,
     use_cache: bool = False,
     validate: bool = True,
 ) -> Any:
     """
-    Upload a local embedding database to HuggingFace Hub for sharing and collaboration. Creates a dat...
+    Upload a per-collection datastore to Hugging Face Hub: <name>.db and <name>.faiss, plus metadata ...
 
     Parameters
     ----------
     action : str
-        Action to upload database to HuggingFace
+
     database_name : str
-        Name of the local database to upload
+        Collection/database name to upload (expects <name>.db and <name>.faiss under ...
     repository : str
-        HuggingFace repository name (format: username/repo-name)
+        HF dataset repo (e.g., 'user/repo')
     description : str
-        Description for the HuggingFace dataset
+        Optional dataset description in the HF README
     private : bool
-        Whether to create a private repository
+        Create/use a private HF repo
     commit_message : str
         Commit message for the upload
     stream_callback : Callable, optional

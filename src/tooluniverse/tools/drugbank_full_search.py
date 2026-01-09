@@ -10,7 +10,7 @@ from ._shared_client import get_shared_client
 
 def drugbank_full_search(
     query: str,
-    search_fields: list[Any],
+    search_fields: list[str],
     case_sensitive: bool,
     exact_match: bool,
     limit: int,
@@ -26,7 +26,7 @@ def drugbank_full_search(
     ----------
     query : str
         Free-text query (e.g. 'DB00945', 'acetylsalicylic', 'Acarbosa').
-    search_fields : list[Any]
+    search_fields : list[str]
         Columns to search in. Choose from: 'drugbank_id', 'name', 'synonyms'.
     case_sensitive : bool
         Match text with exact case if true.

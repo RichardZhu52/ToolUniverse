@@ -773,7 +773,7 @@ class HPAGetDiseaseExpressionTool(HPASearchApiTool):
                 return f"Disease state expression upregulated {fold_change:.2f} fold"
             elif fold_change < 0.5:
                 return (
-                    f"Disease state expression downregulated {1/fold_change:.2f} fold"
+                    f"Disease state expression downregulated {1 / fold_change:.2f} fold"
                 )
             else:
                 return f"Expression level relatively stable (fold change: {fold_change:.2f})"

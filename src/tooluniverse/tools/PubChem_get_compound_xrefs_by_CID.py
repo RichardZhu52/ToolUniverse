@@ -10,7 +10,7 @@ from ._shared_client import get_shared_client
 
 def PubChem_get_compound_xrefs_by_CID(
     cid: int,
-    xref_types: list[Any],
+    xref_types: list[str],
     *,
     stream_callback: Optional[Callable[[str], None]] = None,
     use_cache: bool = False,
@@ -23,7 +23,7 @@ def PubChem_get_compound_xrefs_by_CID(
     ----------
     cid : int
         Compound ID to query external references for, e.g., 2244.
-    xref_types : list[Any]
+    xref_types : list[str]
         List of external database types to query, e.g., ["RegistryID", "RN", "PubMedI...
     stream_callback : Callable, optional
         Callback for streaming output

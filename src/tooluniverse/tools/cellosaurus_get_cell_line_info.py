@@ -11,7 +11,7 @@ from ._shared_client import get_shared_client
 def cellosaurus_get_cell_line_info(
     accession: str,
     format: str,
-    fields: list[Any],
+    fields: list[str],
     *,
     stream_callback: Optional[Callable[[str], None]] = None,
     use_cache: bool = False,
@@ -26,7 +26,7 @@ def cellosaurus_get_cell_line_info(
         Cellosaurus accession number (must start with 'CVCL_')
     format : str
         Response format
-    fields : list[Any]
+    fields : list[str]
         Specific fields to retrieve (e.g., ['id', 'ox', 'char']). If not specified, a...
     stream_callback : Callable, optional
         Callback for streaming output

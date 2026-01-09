@@ -183,6 +183,37 @@ class TestAgenticToolEnvironmentVariables:
             assert tool._api_type == "CHATGPT"  # From tool config
             assert tool._temperature == 0.5     # From tool config
 
+    def test_toolspace_llm_config_mode_env_override(self):
+        """Test 'env_override' mode where environment variables have highest priority."""
+        # Set environment variables
+        os.environ["TOOLUNIVERSE_LLM_CONFIG_MODE"] = "env_override"
+        os.environ["TOOLUNIVERSE_LLM_DEFAULT_PROVIDER"] = "VLLM"
+        os.environ["TOOLUNIVERSE_LLM_MODEL_DEFAULT"] = "meta-llama/Llama-3.1-8B-Instruct"
+        os.environ["TOOLUNIVERSE_LLM_TEMPERATURE"] = "0.7"
+        
+        tool_config = {
+            "name": "test_tool",
+            "prompt": "Test prompt: {input}",
+            "input_arguments": ["input"],
+            "parameter": {
+                "type": "object",
+                "properties": {"input": {"type": "string"}},
+                "required": ["input"]
+            },
+            # Tool config should be overridden by env vars in env_override mode
+            "api_type": "CHATGPT",
+            "model_id": "gpt-4o",
+            "temperature": 0.5
+        }
+        
+        with patch.object(AgenticTool, '_try_initialize_api'):
+            tool = AgenticTool(tool_config)
+            
+            # In env_override mode, environment variables should take priority
+            assert tool._api_type == "VLLM"  # From env var, not tool config
+            assert tool._model_id == "meta-llama/Llama-3.1-8B-Instruct"  # From env var
+            assert tool._temperature == 0.7  # From env var, not tool config
+
     def test_original_gemini_model_id_env_var(self):
         """Test that original GEMINI_MODEL_ID environment variable still works."""
         # Set original environment variable

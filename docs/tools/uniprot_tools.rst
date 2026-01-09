@@ -77,13 +77,24 @@ Extract all variants (feature type = VARIANT) and their related annotations from
 
 Get the complete JSON entry for a specified UniProtKB accession.
 
+.. warning::
+
+   This tool returns the complete UniProtKB entry, which can be extremely large
+   (40,000+ lines for some entries like P00698) and may cause LLM context limits
+   to be exceeded or crashes. For most use cases, consider using more specific
+   extraction tools instead:
+   ``UniProt_get_function_by_accession``, ``UniProt_get_sequence_by_accession``,
+   ``UniProt_get_recommended_name_by_accession``, ``UniProt_get_organism_by_accession``,
+   ``UniProt_get_subcellular_location_by_accession``, ``UniProt_get_disease_variants_by_accession``,
+   or ``UniProt_get_ptm_processing_by_accession``.
+
 .. dropdown:: UniProt_get_entry_by_accession tool specification
 
    **Tool Information:**
 
    * **Name**: ``UniProt_get_entry_by_accession``
    * **Type**: ``UniProtRESTTool``
-   * **Description**: Get the complete JSON entry for a specified UniProtKB accession.
+   * **Description**: Get the complete JSON entry for a specified UniProtKB accession. WARNING: Returns complete UniProtKB entry which can be extremely large (40,000+ lines) and may exceed LLM context limits. Consider using specific extraction tools instead for most use cases.
 
    **Parameters:**
 

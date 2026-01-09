@@ -1,7 +1,7 @@
 """
 FAERS_count_seriousness_by_drug_event
 
-Count the number of adverse event reports classified as serious or non-serious, filtered by drug ...
+Count the number of adverse event reports classified as serious or non-serious. Only medicinalpro...
 """
 
 from typing import Any, Optional, Callable
@@ -10,27 +10,27 @@ from ._shared_client import get_shared_client
 
 def FAERS_count_seriousness_by_drug_event(
     medicinalproduct: str,
-    patientsex: str,
-    patientagegroup: str,
-    occurcountry: str,
+    patientsex: Optional[str] = None,
+    patientagegroup: Optional[str] = None,
+    occurcountry: Optional[str] = None,
     *,
     stream_callback: Optional[Callable[[str], None]] = None,
     use_cache: bool = False,
     validate: bool = True,
 ) -> Any:
     """
-    Count the number of adverse event reports classified as serious or non-serious, filtered by drug ...
+    Count the number of adverse event reports classified as serious or non-serious. Only medicinalpro...
 
     Parameters
     ----------
     medicinalproduct : str
         Drug name.
     patientsex : str
-        Patient sex, leave it blank if you don't want to apply a filter.
+        Optional: Filter by patient sex. Omit this parameter if you don't want to fil...
     patientagegroup : str
-        Patient age group.
+        Optional: Filter by patient age group. Omit this parameter if you don't want ...
     occurcountry : str
-        Country where event occurred.
+        Optional: Filter by country where event occurred (ISO2 code, e.g., 'US', 'GB'...
     stream_callback : Callable, optional
         Callback for streaming output
     use_cache : bool, default False

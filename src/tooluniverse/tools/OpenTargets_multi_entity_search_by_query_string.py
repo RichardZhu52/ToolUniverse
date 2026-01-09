@@ -10,7 +10,7 @@ from ._shared_client import get_shared_client
 
 def OpenTargets_multi_entity_search_by_query_string(
     queryString: str,
-    entityNames: Optional[list[Any]] = None,
+    entityNames: Optional[list[str]] = None,
     page: Optional[dict[str, Any]] = None,
     *,
     stream_callback: Optional[Callable[[str], None]] = None,
@@ -24,7 +24,7 @@ def OpenTargets_multi_entity_search_by_query_string(
     ----------
     queryString : str
         The search string for querying information.
-    entityNames : list[Any]
+    entityNames : list[str]
         List of entity names to search for (e.g., target, disease, drug).
     page : dict[str, Any]
         Pagination settings with index and size.

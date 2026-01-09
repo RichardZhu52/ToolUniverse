@@ -55,8 +55,24 @@ Step 2: Choose Your LLM Provider
 ToolUniverse supports these AI providers:
 
 **OpenAI/Azure OpenAI**
+   - Models: GPT-4, GPT-4o, o1-mini, o1-preview
+   - Configuration: Set ``AZURE_OPENAI_API_KEY`` and ``AZURE_OPENAI_ENDPOINT``
 
 **Google Gemini**
+   - Models: Gemini 2.0 Flash, Gemini 2.5 Pro
+   - Configuration: Set ``GEMINI_API_KEY``
+
+**OpenRouter**
+   - Access to multiple providers through one API
+   - Models: GPT-5, Claude Sonnet 4.5, and more
+   - Configuration: Set ``OPENROUTER_API_KEY``
+   - See :doc:`../guide/openrouter_support` for details
+
+**vLLM (Self-Hosted)**
+   - Run models on your own infrastructure
+   - Models: Any model supported by vLLM (Llama, Mistral, Qwen, etc.)
+   - Configuration: Set ``VLLM_SERVER_URL``
+   - See :doc:`../guide/vllm_support` for complete setup guide
 
 
 Step 3: Create Your First Tool
@@ -170,11 +186,15 @@ Set up AI model settings:
 
 **Configuration Options**:
 
-- ``api_type``: "CHATGPT" or "GEMINI"
+- ``api_type``: "CHATGPT", "GEMINI", "OPENROUTER", or "VLLM"
 - ``model_id``: Choose your model (see Step 2)
+  - For vLLM: Must match the model name loaded on your vLLM server
+  - Set ``VLLM_SERVER_URL`` environment variable when using vLLM
 - ``temperature``: 0.0-2.0 (higher = more creative)
 - ``max_new_tokens``: Response length limit (1024-8192 typical)
 - ``return_json``: true for structured data, false for text
+
+**Using vLLM**: Set ``api_type: "VLLM"`` and ensure ``VLLM_SERVER_URL`` is set. See :doc:`../guide/vllm_support` for complete setup instructions.
 
 3.7 Complete Tool Example
 -------------------------

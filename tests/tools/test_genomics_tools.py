@@ -53,6 +53,12 @@ class TestGenomicsToolsIntegration(unittest.TestCase):
             config = next((c for c in genomics_configs if c["type"] == tool_type), None)
             if config:
                 cls.tu.register_custom_tool(tool_class, tool_config=config)
+
+    @classmethod
+    def tearDownClass(cls):
+        """Clean up test class."""
+        if hasattr(cls, 'tu') and cls.tu:
+            cls.tu.close()
     
     def test_original_gwas_tools_loaded(self):
         """Test that original GWAS tools are loaded."""

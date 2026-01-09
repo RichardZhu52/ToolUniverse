@@ -94,7 +94,14 @@ class AgenticTool(BaseTool):
 
             mode = os.getenv("TOOLUNIVERSE_LLM_CONFIG_MODE", "default")
 
-            if mode == "default":
+            if mode == "env_override":
+                # Environment variables have highest priority: env > tool config > built-in default
+                if env_value is not None:
+                    return env_value
+                if tool_value is not None:
+                    return tool_value
+                return default
+            elif mode == "default":
                 # Space as default: tool config > env > built-in default
                 if tool_value is not None:
                     return tool_value

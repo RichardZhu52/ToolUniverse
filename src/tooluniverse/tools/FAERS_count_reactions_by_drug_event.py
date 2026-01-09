@@ -1,7 +1,7 @@
 """
 FAERS_count_reactions_by_drug_event
 
-Count the number of adverse reactions reported for a given drug, filtered by patient details, eve...
+Count the number of adverse reactions reported for a given drug. Only medicinalproduct is require...
 """
 
 from typing import Any, Optional, Callable
@@ -10,33 +10,36 @@ from ._shared_client import get_shared_client
 
 def FAERS_count_reactions_by_drug_event(
     medicinalproduct: str,
-    patientsex: str,
-    patientagegroup: str,
-    occurcountry: str,
-    serious: str,
-    seriousnessdeath: str,
+    patientsex: Optional[str] = None,
+    patientagegroup: Optional[str] = None,
+    occurcountry: Optional[str] = None,
+    serious: Optional[str] = None,
+    seriousnessdeath: Optional[str] = None,
+    reactionmeddraverse: Optional[str] = None,
     *,
     stream_callback: Optional[Callable[[str], None]] = None,
     use_cache: bool = False,
     validate: bool = True,
 ) -> Any:
     """
-    Count the number of adverse reactions reported for a given drug, filtered by patient details, eve...
+    Count the number of adverse reactions reported for a given drug. Only medicinalproduct is require...
 
     Parameters
     ----------
     medicinalproduct : str
         Drug name.
     patientsex : str
-        Patient sex, leave it blank if you don't want to apply a filter.
+        Optional: Filter by patient sex. Omit this parameter if you don't want to fil...
     patientagegroup : str
-        Patient age group.
+        Optional: Filter by patient age group. Omit this parameter if you don't want ...
     occurcountry : str
-        Country where event occurred.
+        Optional: Filter by country where event occurred (ISO2 code, e.g., 'US', 'GB'...
     serious : str
-        Whether the event was serious.
+        Optional: Filter by event seriousness. Omit this parameter if you don't want ...
     seriousnessdeath : str
-        Was death reported?
+        Optional: Filter for fatal outcomes. Omit this parameter if you don't want to...
+    reactionmeddraverse : str
+        Optional: Filter by MedDRA reaction term (Lowest Level Term). When omitted, r...
     stream_callback : Callable, optional
         Callback for streaming output
     use_cache : bool, default False
@@ -60,6 +63,7 @@ def FAERS_count_reactions_by_drug_event(
                 "occurcountry": occurcountry,
                 "serious": serious,
                 "seriousnessdeath": seriousnessdeath,
+                "reactionmeddraverse": reactionmeddraverse,
             },
         },
         stream_callback=stream_callback,

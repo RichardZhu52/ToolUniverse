@@ -4,7 +4,7 @@ UnifiedToolGenerator
 Generates complete ToolUniverse tools using simplified XML format that simultaneously creates bot...
 """
 
-from typing import Optional, Callable
+from typing import Any, Optional, Callable
 from ._shared_client import get_shared_client
 
 

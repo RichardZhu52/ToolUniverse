@@ -197,11 +197,14 @@ Here's a complete example with all available fields explained:
    
    # LLM configuration (optional, only needed for workspaces with AI agents)
    llm_config:
-     mode: "default"                    # "default" or "fallback"
+     mode: "default"                    # "default", "fallback", or "env_override"
      default_provider: "CHATGPT"        # CHATGPT, GEMINI, OPENROUTER, or VLLM
      models:
        default: "gpt-4o"                # Model used by AgenticTools
      temperature: 0.3                   # 0.0-2.0 range
+   
+   # For vLLM, also set: export VLLM_SERVER_URL="http://your-server:8000"
+   # See :doc:`vllm_support` for complete vLLM setup guide
    
    # Hooks for output processing (optional)
    hooks:

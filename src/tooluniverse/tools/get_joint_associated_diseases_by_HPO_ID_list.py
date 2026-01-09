@@ -9,7 +9,7 @@ from ._shared_client import get_shared_client
 
 
 def get_joint_associated_diseases_by_HPO_ID_list(
-    HPO_ID_list: list[Any],
+    HPO_ID_list: list[str],
     limit: Optional[int] = None,
     offset: Optional[int] = None,
     *,
@@ -22,7 +22,7 @@ def get_joint_associated_diseases_by_HPO_ID_list(
 
     Parameters
     ----------
-    HPO_ID_list : list[Any]
+    HPO_ID_list : list[str]
         List of phenotypes or symptoms
     limit : int
         Number of entries to fetch.

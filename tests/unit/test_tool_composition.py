@@ -32,6 +32,11 @@ class TestToolComposition(unittest.TestCase):
         self.tu.all_tools = []
         self.tu.all_tool_dict = {}
 
+    def tearDown(self):
+        """Tear down test fixtures."""
+        if hasattr(self, 'tu'):
+            self.tu.close()
+
     def test_compose_tool_creation_real(self):
         """Test creating and configuring compose tools with real ToolUniverse."""
         # Test compose tool configuration

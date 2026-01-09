@@ -11,6 +11,11 @@ from indigo import Indigo
 class ChEMBLTool(BaseTool):
     """
     Tool to search for molecules similar to a given compound name or SMILES using the ChEMBL Web Services API.
+
+    Note: This tool is designed for small molecule compounds only. Biologics (antibodies, proteins,
+    oligonucleotides, etc.) do not have SMILES structures and cannot be used for structure-based
+    similarity search. The tool will provide detailed error messages when biologics are queried,
+    explaining the reason and suggesting alternative tools.
     """
 
     def __init__(self, tool_config, base_url="https://www.ebi.ac.uk/chembl/api/data"):
@@ -89,9 +94,11 @@ class ChEMBLTool(BaseTool):
             return {"error": "No valid results found for the compound name."}
         top_molecules = results[:5]
         output = []
+        molecules_without_smiles = []
         for molecule in top_molecules:
             chembl_id = molecule.get("molecule_chembl_id", None)
             molecule_structures = molecule.get("molecule_structures", {})
+            molecule_type = molecule.get("molecule_type", "Unknown")
             if molecule_structures is not None:
                 smiles = molecule_structures.get("canonical_smiles", None)
             else:
@@ -114,8 +121,51 @@ class ChEMBLTool(BaseTool):
                             "pref_name": smiles_pre_name_dict.get("pref_name"),
                         }
                     )
+                else:
+                    # Store info about molecules found but without SMILES
+                    molecules_without_smiles.append(
+                        {
+                            "chembl_id": chembl_id,
+                            "pref_name": pref_name,
+                            "molecule_type": molecule_type,
+                        }
+                    )
         if not output:
-            return {"error": "No ChEMBL IDs or SMILES found for the compound name."}
+            # Provide detailed error message with reason and alternative tools
+            error_msg = "No ChEMBL IDs or SMILES found for the compound name."
+            if molecules_without_smiles:
+                molecule_types = set(
+                    [
+                        m.get("molecule_type")
+                        for m in molecules_without_smiles
+                        if m.get("molecule_type")
+                    ]
+                )
+                if any(
+                    mt in ["Antibody", "Protein", "Oligonucleotide", "Oligosaccharide"]
+                    for mt in molecule_types
+                ):
+                    error_msg = (
+                        f"The compound '{compound_name}' was found in ChEMBL but does not have a SMILES structure. "
+                        f"This tool is designed for small molecule compounds only. "
+                        f"The found molecule(s) are of type(s): {', '.join(molecule_types)}. "
+                        f"Biologics (antibodies, proteins, etc.) do not have SMILES representations. "
+                        f"For searching similar biologics, consider using: "
+                        f"PDB_search_similar_structures (for structure/sequence similarity search using PDB ID or sequence), "
+                        f"BLAST_protein_search (for protein/antibody sequence similarity search, requires amino acid sequence), "
+                        f"or UniProt_search (for searching proteins in UniProt database). "
+                        f"For small molecule similarity search, use: PubChem_search_compounds_by_similarity (requires SMILES input)."
+                    )
+                else:
+                    error_msg = (
+                        f"The compound '{compound_name}' was found in ChEMBL (ChEMBL ID(s): "
+                        f"{', '.join([m.get('chembl_id') for m in molecules_without_smiles[:3]])}) "
+                        f"but does not have a SMILES structure available. "
+                        f"This tool requires SMILES for similarity search. "
+                        f"For searching similar small molecules, consider using: "
+                        f"PubChem_search_compounds_by_similarity (requires SMILES input)."
+                    )
+            return {"error": error_msg}
         return output
 
     def _search_similar_molecules(self, query, similarity_threshold, max_results):
@@ -145,7 +195,50 @@ class ChEMBLTool(BaseTool):
                 smiles_info_list.append(item)
 
         if len(smiles_info_list) == 0:
-            return {"error": "SMILES representation not found for the compound."}
+            # Check if the compound exists in ChEMBL but without SMILES
+            if isinstance(query, str) and not query.upper().startswith("CHEMBL"):
+                # Try to get molecule info to provide better error message
+                headers = {"Accept": "application/json"}
+                search_url = f"{self.base_url}/molecule/search.json?q={quote(query)}"
+                try:
+                    response = requests.get(search_url, headers=headers)
+                    response.raise_for_status()
+                    results = response.json().get("molecules", [])
+                    if results and len(results) > 0:
+                        molecule = results[0]
+                        molecule_type = molecule.get("molecule_type", "Unknown")
+                        chembl_id = molecule.get("molecule_chembl_id")
+                        if molecule_type in [
+                            "Antibody",
+                            "Protein",
+                            "Oligonucleotide",
+                            "Oligosaccharide",
+                        ]:
+                            return {
+                                "error": (
+                                    f"The compound '{query}' was found in ChEMBL (ChEMBL ID: {chembl_id}) "
+                                    f"but is a {molecule_type.lower()}, not a small molecule. "
+                                    f"This tool is designed for small molecule compounds only. "
+                                    f"Biologics (antibodies, proteins, etc.) do not have SMILES representations "
+                                    f"and cannot be used for structure-based similarity search. "
+                                    f"For searching similar biologics, consider using: "
+                                    f"PDB_search_similar_structures (for structure/sequence similarity search using PDB ID or sequence), "
+                                    f"BLAST_protein_search (for protein/antibody sequence similarity search, requires amino acid sequence), "
+                                    f"or UniProt_search (for searching proteins in UniProt database). "
+                                    f"For small molecule similarity search, use: PubChem_search_compounds_by_similarity (requires SMILES input)."
+                                )
+                            }
+                except Exception:
+                    pass
+            return {
+                "error": (
+                    f"SMILES representation not found for the compound '{query}'. "
+                    f"This tool requires SMILES structure for similarity search. "
+                    f"If you have a SMILES string, you can use it directly as the query. "
+                    f"Alternatively, consider using PubChem_search_compounds_by_similarity "
+                    f"(requires SMILES input) for similarity search."
+                )
+            }
 
         results_list = []
         for info in smiles_info_list:

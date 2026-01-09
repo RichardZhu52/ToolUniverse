@@ -131,7 +131,7 @@ class Molecule2DTool(VisualizationTool):
 
         except ImportError:
             return self.create_error_response(
-                "RDKit is not installed. Please install it with: " "pip install rdkit",
+                "RDKit is not installed. Please install it with: pip install rdkit",
                 "MissingDependency",
             )
         except Exception as e:

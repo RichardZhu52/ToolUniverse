@@ -1,7 +1,7 @@
 """
 FAERS_count_death_related_by_drug
 
-Count adverse events associated with patient death for a given drug. Data source: FDA Adverse Eve...
+Count adverse events associated with patient death for a given drug. Only medicinalproduct is req...
 """
 
 from typing import Any, Optional, Callable
@@ -16,7 +16,7 @@ def FAERS_count_death_related_by_drug(
     validate: bool = True,
 ) -> Any:
     """
-    Count adverse events associated with patient death for a given drug. Data source: FDA Adverse Eve...
+    Count adverse events associated with patient death for a given drug. Only medicinalproduct is req...
 
     Parameters
     ----------

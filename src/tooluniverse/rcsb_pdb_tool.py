@@ -9,6 +9,7 @@ class RCSBTool(BaseTool):
         # Lazy import to avoid network request during module import
         try:
             from rcsbapi.data import DataQuery
+
             self.DataQuery = DataQuery
         except ImportError as e:
             raise ImportError(

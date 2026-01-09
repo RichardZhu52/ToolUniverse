@@ -125,6 +125,8 @@ Transform any LLM/Reasoning Model/Agent into a powerful research scientist with 
    tutorials/finding_tools
    guide/tool_caller
    guide/mcp_support
+   guide/compact_mode
+   guide/toolspace
    guide/coding_api
    tutorials/tooluniverse_case_study
    tutorials/agentic_tools_tutorial

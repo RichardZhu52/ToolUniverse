@@ -1,7 +1,7 @@
 """
 FAERS_count_outcomes_by_drug_event
 
-Count the outcome of adverse reactions (recovered, recovering, fatal, unresolved) filtered by dru...
+Count the outcome of adverse reactions (recovered, recovering, fatal, unresolved). Only medicinal...
 """
 
 from typing import Any, Optional, Callable
@@ -10,16 +10,16 @@ from ._shared_client import get_shared_client
 
 def FAERS_count_outcomes_by_drug_event(
     medicinalproduct: str,
-    patientsex: str,
-    patientagegroup: str,
-    occurcountry: str,
+    patientsex: Optional[str] = None,
+    patientagegroup: Optional[str] = None,
+    occurcountry: Optional[str] = None,
     *,
     stream_callback: Optional[Callable[[str], None]] = None,
     use_cache: bool = False,
     validate: bool = True,
 ) -> Any:
     """
-    Count the outcome of adverse reactions (recovered, recovering, fatal, unresolved) filtered by dru...
+    Count the outcome of adverse reactions (recovered, recovering, fatal, unresolved). Only medicinal...
 
     Parameters
     ----------

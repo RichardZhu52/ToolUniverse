@@ -1,0 +1,72 @@
+name: "Gemini Essential Tools"
+version: "1.0.0"
+description: "Essential scientific tools optimized for Gemini CLI MCP integration, limited to 500 tools"
+tags: ["gemini", "mcp", "essential", "scientific", "500-limit"]
+
+# Tool configuration - select important categories while staying under 500 tools
+tools:
+  # Core scientific database categories
+  categories:
+    # Core Databases (156 + 53 + 9 + 10 + 13 = 241 tools)
+    - "fda_drug_label"           # FDA drug information (156 tools)
+    - "opentarget"               # OpenTargets drug-target-disease data (53 tools)
+    - "pubchem"                  # PubChem chemical database (9 tools)
+    - "uniprot"                  # Protein database (10 tools)
+    - "hpa"                      # Human Protein Atlas (13 tools)
+    
+    # Literature Search (estimated ~30 tools)
+    - "EuropePMC"                # Europe PMC biomedical literature
+    - "semantic_scholar"         # Semantic Scholar AI-powered search
+    - "pubtator"                 # Literature annotation (2 tools)
+    - "OpenAlex"                 # OpenAlex academic search
+    - "arxiv"                    # ArXiv preprints
+    - "crossref"                 # Crossref scholarly articles
+    - "dblp"                     # DBLP computer science
+    
+    # Clinical & Regulatory (10 + 3 + 10 = 23 tools)
+    - "clinical_trials"          # Clinical trials tools (10 tools)
+    - "adverse_event"            # Adverse event analysis (3 tools)
+    - "guidelines"               # Clinical guidelines (10 tools)
+    
+    # Structural Biology (39 + 3 = 42 tools)
+    - "rcsb_pdb"                 # Protein structure database (39 tools)
+    - "alphafold"                # AlphaFold protein structure (3 tools)
+    
+    # Chemical & Drug Discovery (9 + 10 = 19 tools)
+    - "admetai"                  # ADMET prediction tools (9 tools)
+    - "disease_target_score"     # Disease target scoring (10 tools)
+    
+    # Genomics & Functional Analysis (12 + 6 + 5 = 23 tools)
+    - "gwas"                     # GWAS genomics tools (12 tools)
+    - "genomics"                 # Genomics tools (6 tools)
+    - "go"                       # Gene Ontology (5 tools)
+    
+    # Additional Important Categories (19 + 3 + 2 + 3 + 4 + 3 + 2 + 8 + 6 + 2 + 4 + 2 = 58 tools)
+    - "xml"                      # DrugBank and MeSH data (19 tools)
+    - "monarch"                  # Phenotype ontology (3 tools)
+    - "dailymed"                 # DailyMed drug information (2 tools)
+    - "cellosaurus"              # Cell line information (3 tools)
+    - "odphp"                    # Health information (4 tools)
+    - "idmap"                    # ID mapping (3 tools)
+    - "output_summarization"     # Output processing (2 tools)
+    - "compose"                  # Tool composition and workflows (8 tools)
+    - "embedding"                # Embedding and vector search (6 tools)
+    - "uspto"                    # Patent information (6 tools)
+    - "special_tools"            # Special utility tools (2 tools)
+    - "tool_finder"              # Tool discovery (4 tools)
+    - "tool_composition"         # Tool composition (2 tools)
+    - "markitdown"               # Document processing (1 tool)
+  
+  # Exclude specific tools that are not needed or cause issues
+  exclude_tools:
+    - "ToolFinderEmbedding"      # Requires GPU for fast speed
+    - "mcp_auto_loader_*"        # Exclude MCP auto-loaders
+    - "get_*_info"               # Exclude package info tools (too many)
+  
+  # Note: Agentic tool categories (agents, drug_discovery_agents) are excluded
+  # by not including them in the categories list above
+
+# Note: This configuration excludes agentic tools and focuses on core scientific databases
+# and analysis tools. Total estimated tools: ~400-450 (well under 500 limit)
+# Some tools may accept optional API keys for enhanced quotas
+

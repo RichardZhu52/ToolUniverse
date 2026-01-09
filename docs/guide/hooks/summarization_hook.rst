@@ -50,6 +50,10 @@ Quick Start
 .. code-block:: python
 
    hook_config = {
+       "exclude_tools": [
+           "Tool_RAG",
+           "ToolFinderEmbedding"
+       ],
        "hooks": [{
            "name": "protein_summarization",
            "type": "SummarizationHook",
@@ -85,6 +89,23 @@ Configuration Options
 **Maximum Summary Length**
 - Limits the length of the final summary
 - Default: 3000 characters
+
+**Excluding Tools**
+
+Use `exclude_tools` to prevent specific tools from being summarized:
+
+.. code-block:: python
+
+   hook_config = {
+       "exclude_tools": [
+           "Tool_RAG",           # Exact match
+           "ToolFinderEmbedding", # Exact match
+           "CustomTool_*"         # Wildcard pattern
+       ],
+       "hooks": [...]
+   }
+
+This is particularly useful for excluding tool discovery tools that shouldn't be processed by hooks.
 
 **Focus Areas Options**
 

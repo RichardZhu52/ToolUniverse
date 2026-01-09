@@ -9,7 +9,7 @@ from ._shared_client import get_shared_client
 
 
 def humanbase_ppi_analysis(
-    gene_list: list[Any],
+    gene_list: list[str],
     tissue: str,
     max_node: int,
     interaction: str,
@@ -24,7 +24,7 @@ def humanbase_ppi_analysis(
 
     Parameters
     ----------
-    gene_list : list[Any]
+    gene_list : list[str]
         List of gene names or symbols to analyze for protein-protein interactions. Th...
     tissue : str
         Tissue type for tissue-specific interactions. Examples: 'brain', 'heart', 'li...

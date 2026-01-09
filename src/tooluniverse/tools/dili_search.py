@@ -10,7 +10,7 @@ from ._shared_client import get_shared_client
 
 def dili_search(
     query: str,
-    search_fields: list[Any],
+    search_fields: list[str],
     case_sensitive: bool,
     exact_match: bool,
     limit: int,
@@ -26,7 +26,7 @@ def dili_search(
     ----------
     query : str
         Free-text query (e.g. 'acetaminophen').
-    search_fields : list[Any]
+    search_fields : list[str]
         Columns to search. Choose from: 'Compound Name'.
     case_sensitive : bool
         Match text with exact case if true.

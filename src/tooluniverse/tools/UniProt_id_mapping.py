@@ -9,7 +9,7 @@ from ._shared_client import get_shared_client
 
 
 def UniProt_id_mapping(
-    ids: str,
+    ids: list[str] | str,
     from_db: str,
     to_db: Optional[str] = None,
     max_wait_time: Optional[int] = None,
@@ -23,7 +23,7 @@ def UniProt_id_mapping(
 
     Parameters
     ----------
-    ids : str
+    ids : list[str] | str
         ID(s) to map. Can be single string or array of strings, e.g., 'ENSG0000014151...
     from_db : str
         Source database. Examples: 'Ensembl', 'Gene_Name', 'RefSeq_Protein', 'PDB', '...

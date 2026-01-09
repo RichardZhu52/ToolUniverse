@@ -27,6 +27,12 @@ class TestPaperSearchTools(unittest.TestCase):
             "biorxiv", "medrxiv", "hal", "doaj", "dblp", "pmc"
         ])
         cls.test_query = "machine learning"
+
+    @classmethod
+    def tearDownClass(cls):
+        """Clean up test class"""
+        if hasattr(cls, 'tu') and cls.tu:
+            cls.tu.close()
     
     def test_arxiv_tool(self):
         """Test ArXiv tool"""

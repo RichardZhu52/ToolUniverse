@@ -430,6 +430,34 @@ class TestTermChildren:
         assert "terms" in result
         assert result["ontology"] == "test"
 
+    @patch.object(OLSTool, "_get_json")
+    def test_get_term_children_v2_at_id_identifier(self, mock_get_json):
+        """Test v2 children payloads that provide @id instead of iri."""
+        mock_get_json.return_value = {
+            "_embedded": {
+                "children": [
+                    {
+                        "@id": "http://example.org/child",
+                        "ontologyName": "test",
+                        "shortForm": "TEST:0002",
+                        "label": ["child_term"],
+                    }
+                ]
+            },
+            "page": {"number": 0, "size": 20, "totalElements": 1},
+        }
+        result = self.tool._handle_get_term_children(
+            {
+                "operation": "get_term_children",
+                "term_iri": "http://example.org/parent",
+                "ontology": "test",
+            }
+        )
+        assert result["total_items"] == 1
+        assert result["showing"] == 1
+        assert len(result["terms"]) == 1
+        assert str(result["terms"][0]["iri"]) == "http://example.org/child"
+
 
 @pytest.mark.unit
 class TestTermAncestors:
@@ -470,6 +498,34 @@ class TestTermAncestors:
         )
         assert "terms" in result
         assert result["term_iri"] == "http://example.org/term"
+
+    @patch.object(OLSTool, "_get_json")
+    def test_get_term_ancestors_v2_at_id_identifier(self, mock_get_json):
+        """Test v2 ancestors payloads that provide @id instead of iri."""
+        mock_get_json.return_value = {
+            "_embedded": {
+                "ancestors": [
+                    {
+                        "@id": "http://example.org/ancestor",
+                        "ontologyName": "test",
+                        "shortForm": "TEST:0000",
+                        "label": ["ancestor_term"],
+                    }
+                ]
+            },
+            "page": {"number": 0, "size": 20, "totalElements": 1},
+        }
+        result = self.tool._handle_get_term_ancestors(
+            {
+                "operation": "get_term_ancestors",
+                "term_iri": "http://example.org/term",
+                "ontology": "test",
+            }
+        )
+        assert result["total_items"] == 1
+        assert result["showing"] == 1
+        assert len(result["terms"]) == 1
+        assert str(result["terms"][0]["iri"]) == "http://example.org/ancestor"
 
 
 @pytest.mark.unit

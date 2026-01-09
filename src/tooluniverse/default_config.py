@@ -6,6 +6,8 @@ It's separated from __init__.py to avoid circular imports.
 """
 
 import os
+import json
+from pathlib import Path
 
 # Get the current directory where this file is located
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -22,6 +24,9 @@ default_tool_files = {
     ),
     "fda_drug_adverse_event": os.path.join(
         current_dir, "data", "fda_drug_adverse_event_tools.json"
+    ),
+    "fda_drug_adverse_event_detail": os.path.join(
+        current_dir, "data", "fda_drug_adverse_event_detail_tools.json"
     ),
     "ChEMBL": os.path.join(current_dir, "data", "chembl_tools.json"),
     "EuropePMC": os.path.join(current_dir, "data", "europe_pmc_tools.json"),
@@ -50,6 +55,8 @@ default_tool_files = {
     "osf_preprints": os.path.join(current_dir, "data", "osf_preprints_tools.json"),
     "fatcat": os.path.join(current_dir, "data", "fatcat_tools.json"),
     "wikidata_sparql": os.path.join(current_dir, "data", "wikidata_sparql_tools.json"),
+    "wikipedia": os.path.join(current_dir, "data", "wikipedia_tools.json"),
+    "dbpedia": os.path.join(current_dir, "data", "dbpedia_tools.json"),
     "agents": os.path.join(current_dir, "data", "agentic_tools.json"),
     # Smolagents tool wrapper configs
     "smolagents": os.path.join(current_dir, "data", "smolagent_tools.json"),
@@ -80,6 +87,7 @@ default_tool_files = {
     "reactome": os.path.join(current_dir, "data", "reactome_tools.json"),
     "pubchem": os.path.join(current_dir, "data", "pubchem_tools.json"),
     "medlineplus": os.path.join(current_dir, "data", "medlineplus_tools.json"),
+    "rxnorm": os.path.join(current_dir, "data", "rxnorm_tools.json"),
     "uniprot": os.path.join(current_dir, "data", "uniprot_tools.json"),
     "cellosaurus": os.path.join(current_dir, "data", "cellosaurus_tools.json"),
     # 'software': os.path.join(current_dir, 'data', 'software_tools.json'),
@@ -161,6 +169,7 @@ default_tool_files = {
     "file_download": os.path.join(current_dir, "data", "file_download_tools.json"),
     # 'langchain': os.path.join(current_dir, 'data', 'langchain_tools.json'),
     "rcsb_pdb": os.path.join(current_dir, "data", "rcsb_pdb_tools.json"),
+    "rcsb_search": os.path.join(current_dir, "data", "rcsb_search_tools.json"),
     "tool_composition": os.path.join(
         current_dir, "data", "tool_composition_tools.json"
     ),
@@ -173,6 +182,9 @@ default_tool_files = {
         current_dir, "data", "output_summarization_tools.json"
     ),
     "odphp": os.path.join(current_dir, "data", "odphp_tools.json"),
+    "who_gho": os.path.join(current_dir, "data", "who_gho_tools.json"),
+    "umls": os.path.join(current_dir, "data", "umls_tools.json"),
+    "euhealth": os.path.join(current_dir, "data", "euhealth_tools.json"),
     "markitdown": os.path.join(current_dir, "data", "markitdown_tools.json"),
     # Guideline and health policy tools
     "guidelines": os.path.join(current_dir, "data", "unified_guideline_tools.json"),
@@ -195,53 +207,109 @@ default_tool_files = {
     # Ontology tools
     "ols": os.path.join(current_dir, "data", "ols_tools.json"),
     "optimizer": os.path.join(current_dir, "data", "optimizer_tools.json"),
+    # Compact mode core tools
+    "compact_mode": os.path.join(current_dir, "data", "compact_mode_tools.json"),
 }
+
+# Auto-load any user-provided tools from ~/.tooluniverse/user_tools/
+user_tools_dir = os.path.expanduser("~/.tooluniverse/data/user_tools")
+
+if os.path.exists(user_tools_dir):
+    for filename in os.listdir(user_tools_dir):
+        if filename.endswith(".json"):
+            key = f"user_{filename.replace('.json', '')}"
+            default_tool_files[key] = os.path.join(user_tools_dir, filename)
+
+
+def _get_hook_config_file_path():
+    """
+    Get the path to the hook configuration file.
+
+    This function uses the same logic as HookManager._get_config_file_path()
+    to ensure consistent path resolution across different installation scenarios.
+
+    Returns
+        Path: Path to the hook_config.json file
+    """
+    try:
+        import importlib.resources as pkg_resources
+    except ImportError:
+        import importlib_resources as pkg_resources
+
+    try:
+        data_files = pkg_resources.files("tooluniverse.template")
+        return data_files / "hook_config.json"
+    except Exception:
+        return Path(__file__).parent / "template" / "hook_config.json"
 
 
 def get_default_hook_config():
     """
-    Get default hook configuration.
+    Get default hook configuration from hook_config.json.
+
+    This function loads the default hook configuration from the hook_config.json
+    template file, providing a single source of truth for default hook settings.
+    If the file cannot be loaded, it falls back to a minimal configuration.
 
     Returns
         dict: Default hook configuration with basic settings
     """
-    return {
-        "global_settings": {
-            "default_timeout": 30,
-            "max_hook_depth": 3,
-            "enable_hook_caching": True,
-            "hook_execution_order": "priority_desc",
-        },
-        "hook_type_defaults": {
-            "SummarizationHook": {
-                "default_output_length_threshold": 5000,
-                "default_chunk_size": 32000,
-                "default_focus_areas": "key_findings_and_results",
-                "default_max_summary_length": 3000,
+    try:
+        config_file = _get_hook_config_file_path()
+        content = (
+            config_file.read_text(encoding="utf-8")
+            if hasattr(config_file, "read_text")
+            else Path(config_file).read_text(encoding="utf-8")
+        )
+        return json.loads(content)
+    except Exception:
+        # Fallback to minimal configuration if file cannot be loaded
+        # This ensures the system continues to work even if the config file
+        # is missing or corrupted
+        return {
+            "global_settings": {
+                "default_timeout": 30,
+                "max_hook_depth": 3,
+                "enable_hook_caching": True,
+                "hook_execution_order": "priority_desc",
             },
-            "FileSaveHook": {
-                "default_temp_dir": None,
-                "default_file_prefix": "tool_output",
-                "default_include_metadata": True,
-                "default_auto_cleanup": False,
-                "default_cleanup_age_hours": 24,
-            },
-        },
-        "hooks": [
-            {
-                "name": "default_summarization_hook",
-                "type": "SummarizationHook",
-                "enabled": True,
-                "priority": 1,
-                "conditions": {"output_length": {"operator": ">", "threshold": 5000}},
-                "hook_config": {
-                    "composer_tool": "OutputSummarizationComposer",
-                    "chunk_size": 32000,
-                    "focus_areas": "key_findings_and_results",
-                    "max_summary_length": 3000,
+            "exclude_tools": [
+                "Tool_RAG",
+                "ToolFinderEmbedding",
+                "ToolFinderLLM",
+            ],
+            "hook_type_defaults": {
+                "SummarizationHook": {
+                    "default_output_length_threshold": 5000,
+                    "default_chunk_size": 32000,
+                    "default_focus_areas": "key_findings_and_results",
+                    "default_max_summary_length": 3000,
                 },
-            }
-        ],
-        "tool_specific_hooks": {},
-        "category_hooks": {},
-    }
+                "FileSaveHook": {
+                    "default_temp_dir": None,
+                    "default_file_prefix": "tool_output",
+                    "default_include_metadata": True,
+                    "default_auto_cleanup": False,
+                    "default_cleanup_age_hours": 24,
+                },
+            },
+            "hooks": [
+                {
+                    "name": "default_summarization_hook",
+                    "type": "SummarizationHook",
+                    "enabled": True,
+                    "priority": 1,
+                    "conditions": {
+                        "output_length": {"operator": ">", "threshold": 5000}
+                    },
+                    "hook_config": {
+                        "composer_tool": "OutputSummarizationComposer",
+                        "chunk_size": 32000,
+                        "focus_areas": "key_findings_and_results",
+                        "max_summary_length": 3000,
+                    },
+                }
+            ],
+            "tool_specific_hooks": {},
+            "category_hooks": {},
+        }

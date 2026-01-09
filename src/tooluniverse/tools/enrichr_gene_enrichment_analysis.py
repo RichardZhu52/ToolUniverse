@@ -9,8 +9,8 @@ from ._shared_client import get_shared_client
 
 
 def enrichr_gene_enrichment_analysis(
-    gene_list: list[Any],
-    libs: list[Any],
+    gene_list: list[str],
+    libs: list[str],
     *,
     stream_callback: Optional[Callable[[str], None]] = None,
     use_cache: bool = False,
@@ -21,9 +21,9 @@ def enrichr_gene_enrichment_analysis(
 
     Parameters
     ----------
-    gene_list : list[Any]
+    gene_list : list[str]
         List of gene names or symbols to analyze. At least 2 genes are required for p...
-    libs : list[Any]
+    libs : list[str]
         List of enrichment libraries to use for analysis.
     stream_callback : Callable, optional
         Callback for streaming output

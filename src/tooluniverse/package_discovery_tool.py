@@ -181,7 +181,7 @@ class DynamicPackageDiscovery(BaseTool):
             # Evaluate each candidate
             evaluated = []
             for i, pkg in enumerate(candidates):
-                print(f"  Evaluating {i+1}/{len(candidates)}: {pkg['name']}")
+                print(f"  Evaluating {i + 1}/{len(candidates)}: {pkg['name']}")
                 evaluation = self._evaluate_package(pkg["name"])
                 # Merge web search info with PyPI evaluation
                 evaluation.update({k: v for k, v in pkg.items() if k not in evaluation})

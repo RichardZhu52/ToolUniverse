@@ -27,21 +27,26 @@ class TestToolUniverseExamplesValidation:
         """Setup ToolUniverse instance for each test."""
         self.tu = ToolUniverse()
         self.tu.load_tools()
+        yield
+        self.tu.close()
 
     def test_quickstart_example_1(self):
         """Test quickstart example 1: Basic ToolUniverse usage."""
         # Test the basic quickstart example from documentation
         tu = ToolUniverse()
-        tu.load_tools()
-        
-        # Test tool execution
-        result = tu.run({
-            "name": "OpenTargets_get_associated_targets_by_disease_efoId",
-            "arguments": {"efoId": "EFO_0000537"}  # hypertension
-        })
-        
-        assert result is not None
-        assert isinstance(result, (dict, list, str))
+        try:
+            tu.load_tools()
+            
+            # Test tool execution
+            result = tu.run({
+                "name": "OpenTargets_get_associated_targets_by_disease_efoId",
+                "arguments": {"efoId": "EFO_0000537"}  # hypertension
+            })
+            
+            assert result is not None
+            assert isinstance(result, (dict, list, str))
+        finally:
+            tu.close()
 
     def test_quickstart_example_2(self):
         """Test quickstart example 2: Tool finder usage."""
@@ -61,14 +66,17 @@ class TestToolUniverseExamplesValidation:
         """Test getting started example 1: Initialize and load tools."""
         # Test initialization and loading from getting started tutorial
         tu = ToolUniverse()
-        tu.load_tools()
-        
-        # Check that tools are loaded
-        assert len(tu.all_tools) > 0
-        
-        # Test tool listing
-        stats = tu.list_built_in_tools()
-        assert stats['total_tools'] > 0
+        try:
+            tu.load_tools()
+            
+            # Check that tools are loaded
+            assert len(tu.all_tools) > 0
+            
+            # Test tool listing
+            stats = tu.list_built_in_tools()
+            assert stats['total_tools'] > 0
+        finally:
+            tu.close()
 
     def test_getting_started_example_2(self):
         """Test getting started example 2: Explore available tools."""
@@ -203,15 +211,18 @@ class TestToolUniverseExamplesValidation:
         
         # Snippet 2: Basic usage
         tu = ToolUniverse()
-        tu.load_tools()
-        assert len(tu.all_tools) > 0
-        
-        # Snippet 3: Query scientific databases
-        result = tu.run({
-            "name": "OpenTargets_get_associated_targets_by_disease_efoId",
-            "arguments": {"efoId": "EFO_0000537"}  # hypertension
-        })
-        assert result is not None
+        try:
+            tu.load_tools()
+            assert len(tu.all_tools) > 0
+            
+            # Snippet 3: Query scientific databases
+            result = tu.run({
+                "name": "OpenTargets_get_associated_targets_by_disease_efoId",
+                "arguments": {"efoId": "EFO_0000537"}  # hypertension
+            })
+            assert result is not None
+        finally:
+            tu.close()
 
     def test_getting_started_tutorial_code_snippets(self):
         """Test getting started tutorial code snippets."""
@@ -219,33 +230,36 @@ class TestToolUniverseExamplesValidation:
         
         # Snippet 1: Initialize ToolUniverse
         tu = ToolUniverse()
-        tu.load_tools()
-        assert len(tu.all_tools) > 0
-        
-        # Snippet 2: List built-in tools
-        stats = tu.list_built_in_tools(mode='config')
-        assert 'categories' in stats
-        
-        # Snippet 3: Search for specific tools
-        protein_tools = tu.run({
-            "name": "Tool_Finder_Keyword",
-            "arguments": {
-                "description": "protein structure",
-                "limit": 5
-            }
-        })
-        assert protein_tools is not None
-        
-        # Snippet 4: Get tool specification
-        spec = tu.tool_specification("UniProt_get_function_by_accession")
-        assert 'name' in spec
-        
-        # Snippet 5: Execute tools
-        gene_query = tu.run({
-            "name": "UniProt_get_function_by_accession",
-            "arguments": {"accession": "P05067"}
-        })
-        assert gene_query is not None
+        try:
+            tu.load_tools()
+            assert len(tu.all_tools) > 0
+            
+            # Snippet 2: List built-in tools
+            stats = tu.list_built_in_tools(mode='config')
+            assert 'categories' in stats
+            
+            # Snippet 3: Search for specific tools
+            protein_tools = tu.run({
+                "name": "Tool_Finder_Keyword",
+                "arguments": {
+                    "description": "protein structure",
+                    "limit": 5
+                }
+            })
+            assert protein_tools is not None
+            
+            # Snippet 4: Get tool specification
+            spec = tu.tool_specification("UniProt_get_function_by_accession")
+            assert 'name' in spec
+            
+            # Snippet 5: Execute tools
+            gene_query = tu.run({
+                "name": "UniProt_get_function_by_accession",
+                "arguments": {"accession": "P05067"}
+            })
+            assert gene_query is not None
+        finally:
+            tu.close()
 
     def test_loading_tools_tutorial_code_snippets(self):
         """Test loading tools tutorial code snippets."""
@@ -253,22 +267,31 @@ class TestToolUniverseExamplesValidation:
         
         # Snippet 1: Load all tools
         tu = ToolUniverse()
-        tu.load_tools()
-        assert len(tu.all_tools) > 0
+        try:
+            tu.load_tools()
+            assert len(tu.all_tools) > 0
+        finally:
+            tu.close()
         
         # Snippet 2: Load specific categories
         tu2 = ToolUniverse()
-        tu2.load_tools(tool_type=["uniprot", "ChEMBL", "opentarget"])
-        assert len(tu2.all_tools) > 0
+        try:
+            tu2.load_tools(tool_type=["uniprot", "ChEMBL", "opentarget"])
+            assert len(tu2.all_tools) > 0
+        finally:
+            tu2.close()
         
         # Snippet 3: Load specific tools
         tu3 = ToolUniverse()
-        tu3.load_tools(include_tools=[
-            "UniProt_get_entry_by_accession",
-            "ChEMBL_get_molecule_by_chembl_id",
-            "OpenTargets_get_associated_targets_by_disease_efoId"
-        ])
-        assert len(tu3.all_tools) > 0
+        try:
+            tu3.load_tools(include_tools=[
+                "UniProt_get_entry_by_accession",
+                "ChEMBL_get_molecule_by_chembl_id",
+                "OpenTargets_get_associated_targets_by_disease_efoId"
+            ])
+            assert len(tu3.all_tools) > 0
+        finally:
+            tu3.close()
 
     def test_listing_tools_tutorial_code_snippets(self):
         """Test listing tools tutorial code snippets."""
@@ -475,18 +498,21 @@ class TestToolUniverseExamplesValidation:
         
         # Test ToolUniverse initialization pattern
         tu = ToolUniverse()
-        assert tu is not None
-        
-        # Test tool loading pattern
-        tu.load_tools()
-        assert len(tu.all_tools) > 0
-        
-        # Test tool execution pattern
-        result = tu.run({
-            "name": "UniProt_get_entry_by_accession",
-            "arguments": {"accession": "P05067"}
-        })
-        assert result is not None
+        try:
+            assert tu is not None
+            
+            # Test tool loading pattern
+            tu.load_tools()
+            assert len(tu.all_tools) > 0
+            
+            # Test tool execution pattern
+            result = tu.run({
+                "name": "UniProt_get_entry_by_accession",
+                "arguments": {"accession": "P05067"}
+            })
+            assert result is not None
+        finally:
+            tu.close()
 
     def test_examples_import_validation(self):
         """Test that example files can be imported without import errors."""

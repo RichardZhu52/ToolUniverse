@@ -296,8 +296,7 @@ class CellosaurusQueryConverterTool(BaseTool):
             "reg": {
                 "short_name": "registration",
                 "description": (
-                    "Official list, or register in which the cell line is "
-                    "registered."
+                    "Official list, or register in which the cell line is registered."
                 ),
                 "keywords": [
                     "registration",
@@ -338,7 +337,7 @@ class CellosaurusQueryConverterTool(BaseTool):
             "biot": {
                 "short_name": "biotechnology",
                 "description": (
-                    "Type of use of the cell line in a biotechnological " "context."
+                    "Type of use of the cell line in a biotechnological context."
                 ),
                 "keywords": [
                     "biotechnology",
@@ -401,8 +400,7 @@ class CellosaurusQueryConverterTool(BaseTool):
             "donor": {
                 "short_name": "donor-info",
                 "description": (
-                    "Miscellaneous information relevant to the donor of the "
-                    "cell line."
+                    "Miscellaneous information relevant to the donor of the cell line."
                 ),
                 "keywords": [
                     "donor",
@@ -414,7 +412,7 @@ class CellosaurusQueryConverterTool(BaseTool):
             "site": {
                 "short_name": "derived-from-site",
                 "description": (
-                    "Body part (tissue or organ) the cell line is derived " "from."
+                    "Body part (tissue or organ) the cell line is derived from."
                 ),
                 "keywords": [
                     "site",
@@ -434,7 +432,7 @@ class CellosaurusQueryConverterTool(BaseTool):
             "disc": {
                 "short_name": "discontinued",
                 "description": (
-                    "Discontinuation status of the cell line in a cell line " "catalog."
+                    "Discontinuation status of the cell line in a cell line catalog."
                 ),
                 "keywords": [
                     "discontinued",
@@ -499,8 +497,7 @@ class CellosaurusQueryConverterTool(BaseTool):
             "ko": {
                 "short_name": "knockout",
                 "description": (
-                    "Gene(s) knocked-out in the cell line and method to "
-                    "obtain the KO."
+                    "Gene(s) knocked-out in the cell line and method to obtain the KO."
                 ),
                 "keywords": ["knockout", "ko", "gene", "knocked-out"],
             },
@@ -532,8 +529,7 @@ class CellosaurusQueryConverterTool(BaseTool):
             "mabi": {
                 "short_name": "mab-isotype",
                 "description": (
-                    "Monoclonal antibody isotype. Examples: IgG2a, kappa; "
-                    "IgM, lambda."
+                    "Monoclonal antibody isotype. Examples: IgG2a, kappa; IgM, lambda."
                 ),
                 "keywords": [
                     "isotype",
@@ -749,7 +745,7 @@ class CellosaurusQueryConverterTool(BaseTool):
             "sx": {
                 "short_name": "-",
                 "description": (
-                    "Sex of the individual from which the cell line " "originates."
+                    "Sex of the individual from which the cell line originates."
                 ),
                 "keywords": [
                     "sex",
@@ -778,8 +774,7 @@ class CellosaurusQueryConverterTool(BaseTool):
             "oi": {
                 "short_name": "-",
                 "description": (
-                    "Cell line(s) originating from same individual (sister "
-                    "cell lines)."
+                    "Cell line(s) originating from same individual (sister cell lines)."
                 ),
                 "keywords": [
                     "sister",
@@ -798,7 +793,7 @@ class CellosaurusQueryConverterTool(BaseTool):
             "ch": {
                 "short_name": "-",
                 "description": (
-                    "Cell line(s) originated from the cell line (child cell " "lines)."
+                    "Cell line(s) originated from the cell line (child cell lines)."
                 ),
                 "keywords": ["child", "derived", "subclone"],
             },
@@ -839,7 +834,7 @@ class CellosaurusQueryConverterTool(BaseTool):
             "dtu": {
                 "short_name": "-",
                 "description": (
-                    "Last modification date of the cell line Cellosaurus " "entry."
+                    "Last modification date of the cell line Cellosaurus entry."
                 ),
                 "keywords": [
                     "modified",
@@ -968,7 +963,7 @@ class CellosaurusQueryConverterTool(BaseTool):
         # Also extract common phrases
         phrases = []
         for i in range(len(words) - 1):
-            phrases.append(f"{words[i]} {words[i+1]}")
+            phrases.append(f"{words[i]} {words[i + 1]}")
 
         all_terms = words + phrases
 
@@ -1177,17 +1172,13 @@ class CellosaurusGetCellLineInfoTool(BaseTool):
             # (Cellosaurus accessions start with CVCL_)
             if not accession.startswith("CVCL_"):
                 return {
-                    "error": (
-                        "Accession must start with 'CVCL_' " "(Cellosaurus format)"
-                    )
+                    "error": ("Accession must start with 'CVCL_' (Cellosaurus format)")
                 }
 
             # Validate format
             valid_formats = ["json", "xml", "txt", "fasta"]
             if format_type not in valid_formats:
-                return {
-                    "error": ("Format must be one of: " f"{', '.join(valid_formats)}")
-                }
+                return {"error": (f"Format must be one of: {', '.join(valid_formats)}")}
 
             # Validate fields if provided
             if fields is not None:
@@ -1295,9 +1286,7 @@ class CellosaurusGetCellLineInfoTool(BaseTool):
 
                 if not cell_line_data:
                     return {
-                        "error": (
-                            "No cell line data found for accession " f"{accession}"
-                        )
+                        "error": (f"No cell line data found for accession {accession}")
                     }
 
                 # Apply field filtering if requested

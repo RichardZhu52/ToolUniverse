@@ -20,6 +20,57 @@ def json_type_to_python(json_type: str) -> str:
     }.get(json_type, "Any")
 
 
+def prop_to_python_type(prop: Dict[str, Any]) -> str:
+    """Convert a JSON schema property to Python type, handling oneOf schemas.
+
+    Args:
+        prop: JSON schema property dictionary
+
+    Returns:
+        Python type annotation as string (e.g., "str", "str | list[str]")
+    """
+    # Handle oneOf schemas (e.g., string or array)
+    if "oneOf" in prop:
+        types = []
+        for one_of_item in prop["oneOf"]:
+            item_type = one_of_item.get("type")
+            if item_type == "string":
+                types.append("str")
+            elif item_type == "array":
+                # Check if it's an array of strings
+                items = one_of_item.get("items", {})
+                if items.get("type") == "string":
+                    types.append("list[str]")
+                else:
+                    types.append("list[Any]")
+            elif item_type:
+                types.append(json_type_to_python(item_type))
+
+        if len(types) == 1:
+            return types[0]
+        elif len(types) > 1:
+            # Remove duplicates while preserving order
+            seen = set()
+            unique_types = []
+            for t in types:
+                if t not in seen:
+                    seen.add(t)
+                    unique_types.append(t)
+            return " | ".join(unique_types)
+
+    # Fall back to regular type handling
+    json_type = prop.get("type", "string")
+    if json_type == "array":
+        # Check if it's an array of a specific type
+        items = prop.get("items", {})
+        if items.get("type") == "string":
+            return "list[str]"
+        else:
+            return "list[Any]"
+
+    return json_type_to_python(json_type)
+
+
 def validate_generated_code(
     tool_name: str, tool_config: Dict[str, Any], generated_file: Path
 ) -> Tuple[bool, list]:
@@ -93,7 +144,7 @@ def generate_tool_file(
     mutable_defaults_code = []
 
     for name, prop in properties.items():
-        py_type = json_type_to_python(prop.get("type", "string"))
+        py_type = prop_to_python_type(prop)
         desc = prop.get("description", "")
         # Escape backslashes to avoid Unicode escape errors in docstrings
         desc = desc.replace("\\", "\\\\")
@@ -108,7 +159,7 @@ def generate_tool_file(
                     # Use None as default and handle in function body
                     optional_params.append(f"{name}: Optional[{py_type}] = None")
                     mutable_defaults_code.append(
-                        ("    if {n} is None:\n" "        {n} = {d}").format(
+                        ("    if {n} is None:\n        {n} = {d}").format(
                             n=name, d=repr(default)
                         )
                     )
@@ -217,7 +268,16 @@ Usage:
 """
 
 # Import exceptions from main package
-from tooluniverse.exceptions import *
+from tooluniverse.exceptions import (
+    ToolError,
+    ToolAuthError,
+    ToolUnavailableError,
+    ToolRateLimitError,
+    ToolValidationError,
+    ToolConfigError,
+    ToolDependencyError,
+    ToolServerError,
+)
 
 # Import shared client utilities
 from ._shared_client import get_shared_client, reset_shared_client
@@ -389,9 +449,10 @@ def _chunked(sequence: List[str], chunk_size: int) -> List[List[str]]:
 
 
 def _format_files(paths: List[str]) -> None:
-    """Format files using pre-commit if available, else ruff/autoflake/black.
+    """Format files using pre-commit if available, else ruff (format + check).
 
     Honors TOOLUNIVERSE_SKIP_FORMAT=1 to skip formatting entirely.
+    Matches pre-commit configuration: ruff-format and ruff-check with --fix.
     """
     if not paths:
         return
@@ -412,44 +473,28 @@ def _format_files(paths: List[str]) -> None:
                 pass
         return
 
-    # Fallback to direct formatter CLIs in the same spirit/order as hooks
+    # Fallback to ruff formatter and linter to match pre-commit hooks
+    # Pre-commit uses: ruff-format and ruff-check with --fix
     ruff = shutil.which("ruff")
     if ruff:
+        # First run ruff format (matches ruff-format hook)
+        try:
+            subprocess.run(
+                [ruff, "format", *paths],
+                check=False,
+            )
+        except Exception:
+            pass
+
+        # Then run ruff check with --fix (matches ruff-check hook with --fix)
         try:
             subprocess.run(
                 [
                     ruff,
+                    "check",
                     "--fix",
-                    "--line-length=88",
-                    "--ignore=E203",
                     *paths,
                 ],
-                check=False,
-            )
-        except Exception:
-            pass
-
-    autoflake = shutil.which("autoflake")
-    if autoflake:
-        try:
-            subprocess.run(
-                [
-                    autoflake,
-                    "--remove-all-unused-imports",
-                    "--remove-unused-variables",
-                    "--in-place",
-                    *paths,
-                ],
-                check=False,
-            )
-        except Exception:
-            pass
-
-    black = shutil.which("black")
-    if black:
-        try:
-            subprocess.run(
-                [black, "--line-length=88", *paths],
                 check=False,
             )
         except Exception:
@@ -515,7 +560,7 @@ def main(
                     unchanged_tools.remove(tool_name)
 
     if missing_files:
-        print(f"🔍 Found {len(missing_files)} missing tool files - " "will regenerate")
+        print(f"🔍 Found {len(missing_files)} missing tool files - will regenerate")
 
     generated_paths: List[str] = []
 

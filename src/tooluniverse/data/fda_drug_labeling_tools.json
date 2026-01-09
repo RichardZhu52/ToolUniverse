@@ -6858,5 +6858,73 @@
       "purpose",
       "FDA"
     ]
+  },
+  {
+    "name": "FDA_get_drug_names_by_indication_aggregated",
+    "description": "Retrieve and aggregate drug names by indication, grouping by generic name with all brand names. This tool iterates through all available results without limit restrictions.",
+    "parameter": {
+      "type": "object",
+      "properties": {
+        "indication": {
+          "type": "string",
+          "description": "The indication or usage of the drug."
+        }
+      },
+      "required": [
+        "indication"
+      ]
+    },
+    "fields": {
+      "search_fields": {
+        "indication": [
+          "indications_and_usage"
+        ]
+      },
+      "return_fields": [
+        "openfda.brand_name",
+        "openfda.generic_name"
+      ]
+    },
+    "type": "FDADrugLabelAggregated",
+    "label": [
+      "FDADrugLabel",
+      "IndicationsAndUsage",
+      "FDA",
+      "Aggregated"
+    ]
+  },
+  {
+    "name": "FDA_get_drug_names_by_indication_stats",
+    "description": "Retrieve and aggregate drug names by indication using FDA count API. This tool uses count mechanism to efficiently get brand_name and generic_name distributions without fetching full records.",
+    "parameter": {
+      "type": "object",
+      "properties": {
+        "indication": {
+          "type": "string",
+          "description": "The indication or usage of the drug."
+        }
+      },
+      "required": [
+        "indication"
+      ]
+    },
+    "fields": {
+      "search_fields": {
+        "indication": [
+          "indications_and_usage"
+        ]
+      },
+      "return_fields": [
+        "openfda.brand_name",
+        "openfda.generic_name"
+      ]
+    },
+    "type": "FDADrugLabelStats",
+    "label": [
+      "FDADrugLabel",
+      "IndicationsAndUsage",
+      "FDA",
+      "Stats"
+    ]
   }
 ]

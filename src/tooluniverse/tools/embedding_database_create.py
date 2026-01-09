@@ -1,7 +1,7 @@
 """
 embedding_database_create
 
-Create a new embedding database from a collection of documents. Generates embeddings using OpenAI...
+Create a per-collection datastore: <name>.db (SQLite) + <name>.faiss (FAISS). Embeds documents us...
 """
 
 from typing import Any, Optional, Callable
@@ -9,34 +9,37 @@ from ._shared_client import get_shared_client
 
 
 def embedding_database_create(
-    action: str,
     database_name: str,
-    documents: list[Any],
-    metadata: list[Any],
-    model: str,
-    description: str,
+    documents: list[str],
+    action: Optional[str] = None,
+    metadata: Optional[list[Any]] = None,
+    provider: Optional[str] = None,
+    model: Optional[str] = None,
+    description: Optional[str] = "",
     *,
     stream_callback: Optional[Callable[[str], None]] = None,
     use_cache: bool = False,
     validate: bool = True,
 ) -> Any:
     """
-    Create a new embedding database from a collection of documents. Generates embeddings using OpenAI...
+    Create a per-collection datastore: <name>.db (SQLite) + <name>.faiss (FAISS). Embeds documents us...
 
     Parameters
     ----------
     action : str
-        Action to create database from documents
+
     database_name : str
-        Name for the new database (must be unique)
-    documents : list[Any]
+        Collection/database name (produces <name>.db and <name>.faiss)
+    documents : list[str]
         List of document texts to embed and store
     metadata : list[Any]
-        Optional metadata for each document (same length as documents)
+        Optional metadata for each document (must match length of documents if provided)
+    provider : str
+        Embedding backend. Defaults: EMBED_PROVIDER, else by available creds (azure>o...
     model : str
-        OpenAI/Azure OpenAI embedding model to use
+        Embedding model/deployment id. Defaults: EMBED_MODEL, else provider-specific ...
     description : str
-        Optional description for the database
+        Optional human-readable description for the collection
     stream_callback : Callable, optional
         Callback for streaming output
     use_cache : bool, default False
@@ -49,7 +52,8 @@ def embedding_database_create(
     Any
     """
     # Handle mutable defaults to avoid B006 linting error
-
+    if metadata is None:
+        metadata = []
     return get_shared_client().run_one_function(
         {
             "name": "embedding_database_create",
@@ -58,6 +62,7 @@ def embedding_database_create(
                 "database_name": database_name,
                 "documents": documents,
                 "metadata": metadata,
+                "provider": provider,
                 "model": model,
                 "description": description,
             },

@@ -9,7 +9,7 @@ from ._shared_client import get_shared_client
 
 
 def OpenTargets_get_drug_withdrawn_blackbox_status_by_chemblId(
-    chemblId: list[Any],
+    chemblId: list[str],
     *,
     stream_callback: Optional[Callable[[str], None]] = None,
     use_cache: bool = False,
@@ -20,7 +20,7 @@ def OpenTargets_get_drug_withdrawn_blackbox_status_by_chemblId(
 
     Parameters
     ----------
-    chemblId : list[Any]
+    chemblId : list[str]
         The chemblId of a drug.
     stream_callback : Callable, optional
         Callback for streaming output

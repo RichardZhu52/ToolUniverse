@@ -9,6 +9,10 @@
         "gene_id": {
           "type": "string",
           "description": "Ensembl gene ID or symbol (e.g., 'ENSG00000139618' or 'BRCA1')"
+        },
+        "species": {
+          "type": "string",
+          "description": "Species name required for gene symbols (default 'homo_sapiens')"
         }
       },
       "required": ["gene_id"]

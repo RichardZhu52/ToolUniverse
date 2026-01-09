@@ -303,7 +303,7 @@ def _format_papers_for_summary(papers):
    Authors: {authors_str}
    Year: {year}
    Venue: {venue}
-   Abstract: {abstract[:200]}{'...' if len(abstract) > 200 else ''}
+   Abstract: {abstract[:200]}{"..." if len(abstract) > 200 else ""}
 """
         formatted_papers.append(formatted_paper)
 

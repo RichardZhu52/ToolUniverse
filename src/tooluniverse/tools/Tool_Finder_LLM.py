@@ -11,9 +11,9 @@ from ._shared_client import get_shared_client
 def Tool_Finder_LLM(
     description: str,
     limit: int,
-    picked_tool_names: Optional[list[Any]] = None,
+    picked_tool_names: Optional[list[str]] = None,
     return_call_result: Optional[bool] = None,
-    categories: Optional[list[Any]] = None,
+    categories: Optional[list[str]] = None,
     *,
     stream_callback: Optional[Callable[[str], None]] = None,
     use_cache: bool = False,
@@ -28,11 +28,11 @@ def Tool_Finder_LLM(
         The description of the tool capability required.
     limit : int
         The number of tools to retrieve
-    picked_tool_names : list[Any]
+    picked_tool_names : list[str]
         Pre-selected tool names to process. If provided, tool selection will skip the...
     return_call_result : bool
         Whether to return both prompts and tool names. If false, returns only tool pr...
-    categories : list[Any]
+    categories : list[str]
         Optional list of tool categories to filter by
     stream_callback : Callable, optional
         Callback for streaming output

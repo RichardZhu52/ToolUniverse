@@ -418,6 +418,11 @@ class ToolUniverse:
             if "type" not in tool_config:
                 tool_config["type"] = name
 
+            # Add MCP annotations to tool config
+            from .tool_defaults import add_annotations_to_tool_config
+
+            add_annotations_to_tool_config(tool_config)
+
             self.all_tools.append(tool_config)
             tool_name_in_config = tool_config.get("name", name)
             self.all_tool_dict[tool_name_in_config] = tool_config
@@ -435,9 +440,7 @@ class ToolUniverse:
                     # Use the same logic as _get_or_initialize_tool (line 2318)
                     # Try to instantiate with tool_config parameter
                     try:
-                        instance = tool_class(
-                            tool_config=tool_config
-                        )  # ✅ 使用关键字参数
+                        instance = tool_class(tool_config=tool_config)
                     except TypeError:
                         # If tool doesn't accept tool_config, try without parameters
                         instance = tool_class()
@@ -562,16 +565,21 @@ class ToolUniverse:
         self, all_missing_keys, output_file: str = ".env.template"
     ):
         """Generate a template .env file with all required API keys"""
-        with open(output_file, "w") as f:
-            f.write("# API Keys for ToolUniverse\n")
-            f.write("# Copy this file to .env and fill in your actual API keys\n\n")
+        try:
+            with open(output_file, "w") as f:
+                f.write("# API Keys for ToolUniverse\n")
+                f.write("# Copy this file to .env and fill in your actual API keys\n\n")
 
-            for key in sorted(all_missing_keys):
-                f.write(f"{key}=your_api_key_here\n\n")
+                for key in sorted(all_missing_keys):
+                    f.write(f"{key}=your_api_key_here\n\n")
 
-        self.logger.info(
-            f"Generated API key template: {output_file}. Copy this file to .env and fill in your API keys"
-        )
+            self.logger.info(
+                f"Generated API key template: {output_file}. Copy this file to .env and fill in your API keys"
+            )
+        except OSError as e:
+            self.logger.warning(
+                f"Could not generate {output_file} (likely read-only file system): {e}"
+            )
 
     def _create_hook_config_from_type(self, hook_type):
         """
@@ -776,9 +784,9 @@ class ToolUniverse:
                 if cat not in exclude_categories_set
             ]
         else:
-            assert isinstance(
-                tool_type, list
-            ), "tool_type must be a list of tool category names"
+            assert isinstance(tool_type, list), (
+                "tool_type must be a list of tool category names"
+            )
             categories_to_load = [
                 cat for cat in tool_type if cat not in exclude_categories_set
             ]
@@ -803,6 +811,18 @@ class ToolUniverse:
                             f"Unexpected data format from {all_tool_files[each]}: {type(loaded_data)}"
                         )
                         continue
+
+                    # Add MCP annotations to each tool config
+                    from .tool_defaults import add_annotations_to_tool_config
+
+                    for tool in loaded_tool_list:
+                        if isinstance(tool, dict):
+                            # Set source_file and category for proper annotation derivation
+                            if "source_file" not in tool:
+                                tool["source_file"] = all_tool_files[each]
+                            if "category" not in tool:
+                                tool["category"] = each
+                            add_annotations_to_tool_config(tool)
 
                     self.all_tools += loaded_tool_list
                     self.tool_category_dicts[each] = loaded_tool_list
@@ -1047,19 +1067,41 @@ class ToolUniverse:
         for loader_config in auto_loaders:
             self.logger.debug(f"Processing loader: {loader_config['name']}")
             try:
+                # Validate required fields before creating instance
+                if not loader_config.get("server_url"):
+                    error_msg = f"MCPAutoLoaderTool '{loader_config['name']}' is missing required field 'server_url'"
+                    self.logger.error(error_msg)
+                    warning(error_msg)
+                    continue
+
                 # Create auto loader instance
                 self.logger.debug("Creating auto loader instance...")
                 auto_loader = tool_type_mappings["MCPAutoLoaderTool"](loader_config)
                 self.logger.debug("Auto loader instance created")
 
-                # Run auto-load process with proper session cleanup
+                # Run auto-load process with proper session cleanup and timeout
                 self.logger.debug("Starting auto-load process...")
 
                 async def _run_auto_load(loader):
                     """Run auto-load with proper cleanup"""
                     try:
-                        result = await loader.auto_load_and_register(self)
+                        # Get timeout from loader config or use default (30 seconds)
+                        timeout = loader_config.get("timeout", 30)
+                        result = await asyncio.wait_for(
+                            loader.auto_load_and_register(self), timeout=timeout
+                        )
                         return result
+                    except asyncio.TimeoutError:
+                        error_msg = f"MCP Auto Loader '{loader_config['name']}' timed out after {timeout} seconds"
+                        self.logger.warning(error_msg)
+                        warning(error_msg)
+                        return {
+                            "discovered_count": 0,
+                            "registered_count": 0,
+                            "tools": [],
+                            "registered_tools": [],
+                            "error": "timeout",
+                        }
                     finally:
                         # Ensure session cleanup
                         await loader._close_session()
@@ -2397,13 +2439,18 @@ class ToolUniverse:
                             "FDADrugLabelGetDrugGenericNameTool"
                         ],
                     )
-                elif "ToolFinderEmbedding" == tool_type:
-                    new_tool = tool_class(tool_config=tool, tooluniverse=self)
-                elif "ComposeTool" == tool_type:
-                    new_tool = tool_class(tool_config=tool, tooluniverse=self)
-                elif "ToolFinderLLM" == tool_type:
-                    new_tool = tool_class(tool_config=tool, tooluniverse=self)
-                elif "ToolFinderKeyword" == tool_type:
+                elif tool_type in [
+                    "ToolFinderEmbedding",
+                    "ComposeTool",
+                    "ToolFinderLLM",
+                    "ToolFinderKeyword",
+                    "SmolAgentTool",
+                    "ListTools",
+                    "GrepTools",
+                    "GetToolInfo",
+                    "ExecuteTool",
+                ]:
+                    # Tool discovery tools need tooluniverse parameter
                     new_tool = tool_class(tool_config=tool, tooluniverse=self)
                 else:
                     new_tool = tool_class(tool_config=tool)
@@ -2416,6 +2463,36 @@ class ToolUniverse:
             tool_type = tool_name if tool_name else tool.get("type")
             mark_tool_unavailable(tool_type, e)
             self.logger.warning(f"Failed to initialize '{tool_type}': {e}")
+            try:
+                with open("/tmp/tu_init_error.txt", "a") as f:
+                    f.write(f"Failed to initialize '{tool_type}': {e}\nTraceback:\n")
+                    import traceback
+
+                    traceback.print_exc(file=f)
+            except Exception:
+                pass
+
+            # Hide tools that cannot be initialized (e.g., missing optional deps)
+            try:
+                # Remove from dictionaries so it doesn't appear in listings
+                if tool_name and tool_name in self.all_tool_dict:
+                    self.all_tool_dict.pop(tool_name, None)
+                elif tool and tool.get("name") in self.all_tool_dict:
+                    self.all_tool_dict.pop(tool.get("name"), None)
+
+                # Also remove from category dicts if present
+                try:
+                    name_to_remove = tool_name or (tool.get("name") if tool else None)
+                    if name_to_remove and hasattr(self, "tool_category_dicts"):
+                        for _cat, _tools in list(self.tool_category_dicts.items()):
+                            self.tool_category_dicts[_cat] = [
+                                t for t in _tools if t.get("name") != name_to_remove
+                            ]
+                except Exception:
+                    pass
+            except Exception:
+                # Best-effort cleanup only
+                pass
             return None  # Return None instead of raising
 
     def _get_tool_instance(self, function_name: str, cache: bool = True):
@@ -2606,6 +2683,13 @@ class ToolUniverse:
 
         tool_instance = self._get_tool_instance(function_name, cache=False)
         if not tool_instance:
+            # Check if we have a recorded error for this tool
+            tool_errors = get_tool_errors()
+            if function_name in tool_errors:
+                error_info = tool_errors[function_name]
+                return ToolConfigError(
+                    f"Failed to initialize tool for validation: {error_info['error']}"
+                )
             return ToolConfigError("Failed to initialize tool for validation")
 
         # Check if tool has validate_parameters method (for backward compatibility)

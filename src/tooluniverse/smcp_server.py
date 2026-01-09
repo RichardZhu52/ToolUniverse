@@ -38,6 +38,9 @@ Examples:
   # Start with custom hook configuration
   tooluniverse-smcp-server --hook-config-file /path/to/hook_config.json
 
+  # Start with compact mode (only expose core tools)
+  tooluniverse-smcp-server --compact-mode
+
   # Load Space configuration
   tooluniverse-smcp-server --load "community/proteomics-toolkit"
   tooluniverse-smcp-server --load "./my-config.yaml"
@@ -96,6 +99,11 @@ Examples:
         default="ToolUniverse SMCP Server",
         help="Server name (default: ToolUniverse SMCP Server)",
     )
+    parser.add_argument(
+        "--compact-mode",
+        action="store_true",
+        help="Enable compact mode: only expose core tools (4 tools) to prevent context window overflow. All tools are still loaded in background for execute_tool to work.",
+    )
 
     args = parser.parse_args()
 
@@ -129,6 +137,9 @@ Examples:
         else:
             print("🔗 Hooks disabled")
 
+        if args.compact_mode:
+            print("📦 Compact mode enabled: only core tools will be exposed")
+
         print()
 
         # Create SMCP server with Space support
@@ -141,6 +152,7 @@ Examples:
             hooks_enabled=hooks_enabled,
             hook_config=hook_config,
             hook_type=args.hook_type,
+            compact_mode=args.compact_mode,
         )
 
         # Run server with streamable-http transport
@@ -224,6 +236,9 @@ Examples:
 
   # Start minimal server with just search tools
   tooluniverse-smcp-stdio --categories special_tools tool_finder
+
+  # Start with compact mode (only expose core tools)
+  tooluniverse-smcp-stdio --compact-mode
 
   # Load Space configuration
   tooluniverse-smcp-stdio --load "hf:community/proteomics-toolkit"
@@ -338,6 +353,11 @@ Examples:
     )
     parser.add_argument(
         "--verbose", "-v", action="store_true", help="Enable verbose logging"
+    )
+    parser.add_argument(
+        "--compact-mode",
+        action="store_true",
+        help="Enable compact mode: only expose core tools (4 tools) to prevent context window overflow. All tools are still loaded in background for execute_tool to work.",
     )
 
     # Hook configuration options (default disabled for stdio)
@@ -526,6 +546,11 @@ Examples:
                 f"🚫 Excluding tool types: {', '.join(exclude_tool_types)}",
                 file=sys.stderr,
             )
+        if args.compact_mode:
+            print(
+                "📦 Compact mode enabled: only core tools will be exposed",
+                file=sys.stderr,
+            )
 
         # Load hook configuration if specified
         hook_config = None
@@ -578,6 +603,7 @@ Examples:
             hooks_enabled=hooks_enabled,
             hook_config=hook_config,
             hook_type=hook_type,
+            compact_mode=args.compact_mode,
         )
 
         # Run server with stdio transport (forced)
@@ -640,8 +666,14 @@ Examples:
   # Start minimal server with just search tools
   tooluniverse-smcp --categories special_tools tool_finder --port 7000
 
+  # Start with compact mode (only expose core tools)
+  tooluniverse-smcp --compact-mode --port 8000
+
   # Start server for Claude Desktop (stdio transport)
   tooluniverse-smcp --transport stdio
+
+  # Start with compact mode for Claude Desktop
+  tooluniverse-smcp --compact-mode --transport stdio
 
   # Load Space configuration
   tooluniverse-smcp --load "community/proteomics-toolkit" --port 8000
@@ -791,6 +823,11 @@ Examples:
         type=str,
         help="Path to custom hook configuration JSON file",
     )
+    parser.add_argument(
+        "--compact-mode",
+        action="store_true",
+        help="Enable compact mode: only expose core tools (4 tools) to prevent context window overflow. All tools are still loaded in background for execute_tool to work.",
+    )
 
     args = parser.parse_args()
 
@@ -924,6 +961,8 @@ Examples:
             print(f"🎯 Including tool types: {', '.join(include_tool_types)}")
         if exclude_tool_types:
             print(f"🚫 Excluding tool types: {', '.join(exclude_tool_types)}")
+        if args.compact_mode:
+            print("📦 Compact mode enabled: only core tools will be exposed")
 
         # Load hook configuration if specified
         hook_config = None
@@ -969,6 +1008,7 @@ Examples:
             hooks_enabled=hooks_enabled,
             hook_config=hook_config,
             hook_type=args.hook_type,
+            compact_mode=args.compact_mode,
         )
 
         # Run server

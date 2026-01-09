@@ -12,7 +12,8 @@ def tooluni():
     """Initialize tool universe for all tests."""
     tu = ToolUniverse()
     tu.load_tools()
-    return tu
+    yield tu
+    tu.close()
 
 
 def test_cellosaurus_tools_exist(tooluni):

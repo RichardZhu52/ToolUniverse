@@ -2,7 +2,7 @@
   {
     "type": "FDADrugAdverseEventTool",
     "name": "FAERS_count_reactions_by_drug_event",
-    "description": "Count the number of adverse reactions reported for a given drug. Only medicinalproduct is required; all other filters (patientsex, patientagegroup, occurcountry, serious, seriousnessdeath) are optional. Use filters sparingly to avoid overly restrictive searches that return no results. Data source: FDA Adverse Event Reporting System (FAERS).",
+    "description": "Count the number of adverse reactions reported for a given drug. Only medicinalproduct is required; all other filters (patientsex, patientagegroup, occurcountry, serious, seriousnessdeath, reactionmeddraverse) are optional. When reactionmeddraverse is not specified, returns all adverse reactions (AE) with their counts grouped by MedDRA Preferred Term. When reactionmeddraverse is specified, filters results to only include that specific MedDRA Lowest Level Term. Use filters sparingly to avoid overly restrictive searches that return no results. Data source: FDA Adverse Event Reporting System (FAERS).",
     "parameter": {
       "type": "object",
       "properties": {
@@ -50,6 +50,10 @@
             "No"
           ],
           "description": "Optional: Filter for fatal outcomes. Omit this parameter if you don't want to filter by death."
+        },
+        "reactionmeddraverse": {
+          "type": "string",
+          "description": "Optional: Filter by MedDRA reaction term (Lowest Level Term). When omitted, returns all adverse reactions with their counts. When specified, filters results to only include that specific reaction term."
         }
       },
       "required": [
@@ -75,6 +79,10 @@
         ],
         "seriousnessdeath": [
           "seriousnessdeath"
+        ],
+        "reactionmeddraverse": [
+          "patient.reaction.reactionmeddrapt",
+          "patient.reaction.reactionmeddraverse"
         ]
       },
       "return_fields": [

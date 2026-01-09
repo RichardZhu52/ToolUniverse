@@ -1,7 +1,7 @@
 """
 FAERS_count_patient_age_distribution
 
-Analyze the age distribution of patients experiencing adverse events for a specific drug. The age...
+Analyze the age distribution of patients experiencing adverse events for a specific drug. Only me...
 """
 
 from typing import Any, Optional, Callable
@@ -16,7 +16,7 @@ def FAERS_count_patient_age_distribution(
     validate: bool = True,
 ) -> Any:
     """
-    Analyze the age distribution of patients experiencing adverse events for a specific drug. The age...
+    Analyze the age distribution of patients experiencing adverse events for a specific drug. Only me...
 
     Parameters
     ----------

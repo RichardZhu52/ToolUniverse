@@ -9,7 +9,7 @@ from ._shared_client import get_shared_client
 
 
 def get_clinical_trial_eligibility_criteria(
-    nct_ids: list[Any],
+    nct_ids: list[str],
     eligibility_criteria: str,
     *,
     stream_callback: Optional[Callable[[str], None]] = None,
@@ -21,7 +21,7 @@ def get_clinical_trial_eligibility_criteria(
 
     Parameters
     ----------
-    nct_ids : list[Any]
+    nct_ids : list[str]
         List of NCT IDs of the clinical trials (e.g., ['NCT04852770', 'NCT01728545']).
     eligibility_criteria : str
         Placeholder.

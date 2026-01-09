@@ -9,7 +9,7 @@ from ._shared_client import get_shared_client
 
 
 def OpenTargets_get_gene_ontology_terms_by_goID(
-    goIds: list[Any],
+    goIds: list[str],
     *,
     stream_callback: Optional[Callable[[str], None]] = None,
     use_cache: bool = False,
@@ -20,7 +20,7 @@ def OpenTargets_get_gene_ontology_terms_by_goID(
 
     Parameters
     ----------
-    goIds : list[Any]
+    goIds : list[str]
         A list of Gene Ontology (GO) IDs to fetch the corresponding terms.
     stream_callback : Callable, optional
         Callback for streaming output

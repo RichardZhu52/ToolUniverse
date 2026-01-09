@@ -4,7 +4,7 @@ XMLToolOptimizer
 Optimizes tools defined in XML format based on test results and quality feedback
 """
 
-from typing import Optional, Callable
+from typing import Any, Optional, Callable
 from ._shared_client import get_shared_client
 
 

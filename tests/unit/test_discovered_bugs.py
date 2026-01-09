@@ -36,6 +36,11 @@ class TestDiscoveredBugs(unittest.TestCase):
         # Load tools for real testing
         self.tu.load_tools()
     
+    def tearDown(self):
+        """Tear down test fixtures."""
+        if hasattr(self, 'tu'):
+            self.tu.close()
+    
     def test_deprecated_method_warnings(self):
         """Test that deprecated methods show proper warnings."""
         # Test get_tool_by_name deprecation warning

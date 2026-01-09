@@ -38,7 +38,7 @@ class UniProtRESTTool(BaseTool):
         """Custom data extraction with support for filtering"""
 
         # Handle specific UniProt extraction patterns
-        if extract_path == ("comments[?(@.commentType==" "'FUNCTION')].texts[*].value"):
+        if extract_path == ("comments[?(@.commentType=='FUNCTION')].texts[*].value"):
             # Extract function comments
             result = []
             for comment in data.get("comments", []):
@@ -70,7 +70,7 @@ class UniProtRESTTool(BaseTool):
             return result
 
         elif extract_path == (
-            "features[?(@.type=='MODIFIED RESIDUE' || " "@.type=='SIGNAL')]"
+            "features[?(@.type=='MODIFIED RESIDUE' || @.type=='SIGNAL')]"
         ):
             # Extract PTM and signal features
             result = []

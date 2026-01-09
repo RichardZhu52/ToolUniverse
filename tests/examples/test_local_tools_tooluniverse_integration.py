@@ -112,6 +112,9 @@ def test_tooluniverse_initialization():
         print(f"📊 Loaded tools: {len(tu.tools) if hasattr(tu, 'tools') else 'N/A'}")
         
         return True
+    finally:
+        if 'tu' in locals():
+            tu.close()
         
     except Exception as e:
         print(f"❌ ToolUniverse initialization failed: {e}")
@@ -239,6 +242,9 @@ def test_tu_run_api():
         import traceback
         traceback.print_exc()
         return False
+    finally:
+        if 'tu' in locals():
+            tu.close()
 
 def test_tu_tools_attribute():
     """Test the tu.tools attribute access."""
@@ -302,6 +308,9 @@ def test_tu_tools_attribute():
     except Exception as e:
         print(f"❌ tu.tools attribute test failed: {e}")
         return False
+    finally:
+        if 'tu' in locals():
+            tu.close()
 
 def test_parallel_execution():
     """Test parallel execution using tu.run() with list."""
@@ -375,6 +384,9 @@ def test_parallel_execution():
     except Exception as e:
         print(f"❌ Parallel execution test failed: {e}")
         return False
+    finally:
+        if 'tu' in locals():
+            tu.close()
 
 # =============================================================================
 # MAIN EXECUTION

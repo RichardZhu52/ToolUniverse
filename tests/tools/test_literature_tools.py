@@ -19,7 +19,8 @@ class TestLiteratureTools:
         """Initialize ToolUniverse for testing."""
         tu = ToolUniverse()
         tu.load_tools()
-        return tu
+        yield tu
+        tu.close()
 
     def test_literature_tools_exist(self, tu):
         """Test that literature search tools are registered."""

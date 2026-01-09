@@ -1,7 +1,7 @@
 """
 ToolUniverse Tools
 
-Type-safe Python interface to 734 scientific tools.
+Type-safe Python interface to 783 scientific tools.
 Each tool is in its own module for minimal import overhead.
 
 Usage:
@@ -10,6 +10,16 @@ Usage:
 """
 
 # Import exceptions from main package
+from tooluniverse.exceptions import (
+    ToolError,
+    ToolAuthError,
+    ToolUnavailableError,
+    ToolRateLimitError,
+    ToolValidationError,
+    ToolConfigError,
+    ToolDependencyError,
+    ToolServerError,
+)
 
 # Import shared client utilities
 from ._shared_client import get_shared_client, reset_shared_client
@@ -57,6 +67,7 @@ from .CompoundDiscoveryAgent import CompoundDiscoveryAgent
 from .ComprehensiveDrugDiscoveryPipeline import ComprehensiveDrugDiscoveryPipeline
 from .Crossref_search_works import Crossref_search_works
 from .DBLP_search_publications import DBLP_search_publications
+from .DBpedia_SPARQL_query import DBpedia_SPARQL_query
 from .DOAJ_search_articles import DOAJ_search_articles
 from .DailyMed_get_spl_by_setid import DailyMed_get_spl_by_setid
 from .DailyMed_search_spls import DailyMed_search_spls
@@ -104,6 +115,20 @@ from .FAERS_count_reportercountry_by_drug_event import (
     FAERS_count_reportercountry_by_drug_event,
 )
 from .FAERS_count_seriousness_by_drug_event import FAERS_count_seriousness_by_drug_event
+from .FAERS_search_adverse_event_reports import FAERS_search_adverse_event_reports
+from .FAERS_search_reports_by_drug_and_indication import (
+    FAERS_search_reports_by_drug_and_indication,
+)
+from .FAERS_search_reports_by_drug_and_outcome import (
+    FAERS_search_reports_by_drug_and_outcome,
+)
+from .FAERS_search_reports_by_drug_and_reaction import (
+    FAERS_search_reports_by_drug_and_reaction,
+)
+from .FAERS_search_reports_by_drug_combination import (
+    FAERS_search_reports_by_drug_combination,
+)
+from .FAERS_search_serious_reports_by_drug import FAERS_search_serious_reports_by_drug
 from .FDA_get_abuse_dependence_info_by_drug_name import (
     FDA_get_abuse_dependence_info_by_drug_name,
 )
@@ -267,6 +292,12 @@ from .FDA_get_drug_names_by_general_precautions import (
 from .FDA_get_drug_names_by_geriatric_use import FDA_get_drug_names_by_geriatric_use
 from .FDA_get_drug_names_by_health_claim import FDA_get_drug_names_by_health_claim
 from .FDA_get_drug_names_by_indication import FDA_get_drug_names_by_indication
+from .FDA_get_drug_names_by_indication_aggregated import (
+    FDA_get_drug_names_by_indication_aggregated,
+)
+from .FDA_get_drug_names_by_indication_stats import (
+    FDA_get_drug_names_by_indication_stats,
+)
 from .FDA_get_drug_names_by_info_for_nursing_mothers import (
     FDA_get_drug_names_by_info_for_nursing_mothers,
 )
@@ -599,6 +630,9 @@ from .OpenTargets_get_drug_indications_by_chemblId import (
 from .OpenTargets_get_drug_mechanisms_of_action_by_chemblId import (
     OpenTargets_get_drug_mechanisms_of_action_by_chemblId,
 )
+from .OpenTargets_get_drug_names_by_chemblId import (
+    OpenTargets_get_drug_names_by_chemblId,
+)
 from .OpenTargets_get_drug_synonyms_by_chemblId import (
     OpenTargets_get_drug_synonyms_by_chemblId,
 )
@@ -685,6 +719,7 @@ from .OpenTargets_search_category_counts_by_query_string import (
 )
 from .OpenTargets_target_disease_evidence import OpenTargets_target_disease_evidence
 from .OutputSummarizationComposer import OutputSummarizationComposer
+from .PDB_search_similar_structures import PDB_search_similar_structures
 from .PMC_search_papers import PMC_search_papers
 from .PRIDE_search_proteomics import PRIDE_search_proteomics
 from .PackageAnalyzer import PackageAnalyzer
@@ -721,6 +756,7 @@ from .ReferenceInfoAnalyzer import ReferenceInfoAnalyzer
 from .RegulomeDB_query_variant import RegulomeDB_query_variant
 from .ReproducibilityTransparencyReviewer import ReproducibilityTransparencyReviewer
 from .ResultsInterpretationReviewer import ResultsInterpretationReviewer
+from .RxNorm_get_drug_names import RxNorm_get_drug_names
 from .SCREEN_get_regulatory_elements import SCREEN_get_regulatory_elements
 from .ScientificTextSummarizer import ScientificTextSummarizer
 from .SemanticScholar_search_papers import SemanticScholar_search_papers
@@ -771,6 +807,9 @@ from .WHO_Guidelines_Search import WHO_Guidelines_Search
 from .WikiPathways_get_pathway import WikiPathways_get_pathway
 from .WikiPathways_search import WikiPathways_search
 from .Wikidata_SPARQL_query import Wikidata_SPARQL_query
+from .Wikipedia_get_content import Wikipedia_get_content
+from .Wikipedia_get_summary import Wikipedia_get_summary
+from .Wikipedia_search import Wikipedia_search
 from .WoRMS_search_species import WoRMS_search_species
 from .WritingPresentationReviewer import WritingPresentationReviewer
 from .XMLToolOptimizer import XMLToolOptimizer
@@ -856,7 +895,6 @@ from .drugbank_vocab_search import drugbank_vocab_search
 from .dynamic_package_discovery import dynamic_package_discovery
 from .embedding_database_add import embedding_database_add
 from .embedding_database_create import embedding_database_create
-from .embedding_database_load import embedding_database_load
 from .embedding_database_search import embedding_database_search
 from .embedding_sync_download import embedding_sync_download
 from .embedding_sync_upload import embedding_sync_upload
@@ -864,9 +902,49 @@ from .enrichr_gene_enrichment_analysis import enrichr_gene_enrichment_analysis
 from .ensembl_get_sequence import ensembl_get_sequence
 from .ensembl_get_variants import ensembl_get_variants
 from .ensembl_lookup_gene import ensembl_lookup_gene
+from .euhealthinfo_deepdive import euhealthinfo_deepdive
+from .euhealthinfo_search_alcohol_tobacco_psychoactive_use import (
+    euhealthinfo_search_alcohol_tobacco_psychoactive_use,
+)
+from .euhealthinfo_search_births import euhealthinfo_search_births
+from .euhealthinfo_search_cancer import euhealthinfo_search_cancer
+from .euhealthinfo_search_cancer_registry import euhealthinfo_search_cancer_registry
+from .euhealthinfo_search_causes_of_death import euhealthinfo_search_causes_of_death
+from .euhealthinfo_search_covid_19 import euhealthinfo_search_covid_19
+from .euhealthinfo_search_deaths import euhealthinfo_search_deaths
+from .euhealthinfo_search_diabetes_mellitus_epidemiology_registry import (
+    euhealthinfo_search_diabetes_mellitus_epidemiology_registry,
+)
+from .euhealthinfo_search_disability import euhealthinfo_search_disability
+from .euhealthinfo_search_healthcare_expenditure import (
+    euhealthinfo_search_healthcare_expenditure,
+)
+from .euhealthinfo_search_hospital_in_patient_data import (
+    euhealthinfo_search_hospital_in_patient_data,
+)
+from .euhealthinfo_search_infectious_diseases import (
+    euhealthinfo_search_infectious_diseases,
+)
+from .euhealthinfo_search_key_indicators_registries_surveys import (
+    euhealthinfo_search_key_indicators_registries_surveys,
+)
+from .euhealthinfo_search_mental_health import euhealthinfo_search_mental_health
+from .euhealthinfo_search_obesity import euhealthinfo_search_obesity
+from .euhealthinfo_search_population_health_survey import (
+    euhealthinfo_search_population_health_survey,
+)
+from .euhealthinfo_search_primary_care_workforce import (
+    euhealthinfo_search_primary_care_workforce,
+)
+from .euhealthinfo_search_surveillance import euhealthinfo_search_surveillance
+from .euhealthinfo_search_surveillance_mortality_rates import (
+    euhealthinfo_search_surveillance_mortality_rates,
+)
+from .euhealthinfo_search_vaccination import euhealthinfo_search_vaccination
 from .europepmc_disease_target_score import europepmc_disease_target_score
 from .eva_disease_target_score import eva_disease_target_score
 from .eva_somatic_disease_target_score import eva_somatic_disease_target_score
+from .execute_tool import execute_tool
 from .expression_atlas_disease_target_score import expression_atlas_disease_target_score
 from .extract_clinical_trial_adverse_events import extract_clinical_trial_adverse_events
 from .extract_clinical_trial_outcomes import extract_clinical_trial_outcomes
@@ -1096,6 +1174,7 @@ from .get_target_cofactor_info import get_target_cofactor_info
 from .get_taxonomy_by_pdb_id import get_taxonomy_by_pdb_id
 from .get_tiledb_info import get_tiledb_info
 from .get_tiledbsoma_info import get_tiledbsoma_info
+from .get_tool_info import get_tool_info
 from .get_torch_geometric_info import get_torch_geometric_info
 from .get_tqdm_info import get_tqdm_info
 from .get_trackpy_info import get_trackpy_info
@@ -1110,7 +1189,9 @@ from .get_xarray_info import get_xarray_info
 from .get_xesmf_info import get_xesmf_info
 from .get_xgboost_info import get_xgboost_info
 from .get_zarr_info import get_zarr_info
+from .ghost_tool import ghost_tool
 from .gnomad_get_gene_constraints import gnomad_get_gene_constraints
+from .grep_tools import grep_tools
 from .gwas_get_association_by_id import gwas_get_association_by_id
 from .gwas_get_associations_for_snp import gwas_get_associations_for_snp
 from .gwas_get_associations_for_study import gwas_get_associations_for_study
@@ -1124,11 +1205,14 @@ from .gwas_search_associations import gwas_search_associations
 from .gwas_search_snps import gwas_search_snps
 from .gwas_search_studies import gwas_search_studies
 from .humanbase_ppi_analysis import humanbase_ppi_analysis
+from .icd_search_codes import icd_search_codes
 from .kegg_find_genes import kegg_find_genes
 from .kegg_get_gene_info import kegg_get_gene_info
 from .kegg_get_pathway_info import kegg_get_pathway_info
 from .kegg_list_organisms import kegg_list_organisms
 from .kegg_search_pathway import kegg_search_pathway
+from .list_tools import list_tools
+from .loinc_search_codes import loinc_search_codes
 from .mesh_get_subjects_by_pharmacological_action import (
     mesh_get_subjects_by_pharmacological_action,
 )
@@ -1154,11 +1238,18 @@ from .python_code_executor import python_code_executor
 from .python_script_runner import python_script_runner
 from .reactome_disease_target_score import reactome_disease_target_score
 from .search_clinical_trials import search_clinical_trials
+from .snomed_search_concepts import snomed_search_concepts
+from .test_decorator_tool import test_decorator_tool
+from .test_server_tool import test_server_tool
+from .umls_get_concept_details import umls_get_concept_details
+from .umls_search_concepts import umls_search_concepts
 from .visualize_molecule_2d import visualize_molecule_2d
 from .visualize_molecule_3d import visualize_molecule_3d
 from .visualize_protein_structure_3d import visualize_protein_structure_3d
 from .web_api_documentation_search import web_api_documentation_search
 from .web_search import web_search
+from .who_gho_get_data import who_gho_get_data
+from .who_gho_query_health_data import who_gho_query_health_data
 
 __all__ = [
     "get_shared_client",
@@ -1193,6 +1284,7 @@ __all__ = [
     "ComprehensiveDrugDiscoveryPipeline",
     "Crossref_search_works",
     "DBLP_search_publications",
+    "DBpedia_SPARQL_query",
     "DOAJ_search_articles",
     "DailyMed_get_spl_by_setid",
     "DailyMed_search_spls",
@@ -1226,6 +1318,12 @@ __all__ = [
     "FAERS_count_reactions_by_drug_event",
     "FAERS_count_reportercountry_by_drug_event",
     "FAERS_count_seriousness_by_drug_event",
+    "FAERS_search_adverse_event_reports",
+    "FAERS_search_reports_by_drug_and_indication",
+    "FAERS_search_reports_by_drug_and_outcome",
+    "FAERS_search_reports_by_drug_and_reaction",
+    "FAERS_search_reports_by_drug_combination",
+    "FAERS_search_serious_reports_by_drug",
     "FDA_get_abuse_dependence_info_by_drug_name",
     "FDA_get_abuse_info_by_drug_name",
     "FDA_get_accessories_info_by_drug_name",
@@ -1301,6 +1399,8 @@ __all__ = [
     "FDA_get_drug_names_by_geriatric_use",
     "FDA_get_drug_names_by_health_claim",
     "FDA_get_drug_names_by_indication",
+    "FDA_get_drug_names_by_indication_aggregated",
+    "FDA_get_drug_names_by_indication_stats",
     "FDA_get_drug_names_by_info_for_nursing_mothers",
     "FDA_get_drug_names_by_information_for_owners_or_caregivers",
     "FDA_get_drug_names_by_ingredient",
@@ -1469,6 +1569,7 @@ __all__ = [
     "OpenTargets_get_drug_id_description_by_name",
     "OpenTargets_get_drug_indications_by_chemblId",
     "OpenTargets_get_drug_mechanisms_of_action_by_chemblId",
+    "OpenTargets_get_drug_names_by_chemblId",
     "OpenTargets_get_drug_synonyms_by_chemblId",
     "OpenTargets_get_drug_trade_names_by_chemblId",
     "OpenTargets_get_drug_warnings_by_chemblId",
@@ -1499,6 +1600,7 @@ __all__ = [
     "OpenTargets_search_category_counts_by_query_string",
     "OpenTargets_target_disease_evidence",
     "OutputSummarizationComposer",
+    "PDB_search_similar_structures",
     "PMC_search_papers",
     "PRIDE_search_proteomics",
     "PackageAnalyzer",
@@ -1527,6 +1629,7 @@ __all__ = [
     "RegulomeDB_query_variant",
     "ReproducibilityTransparencyReviewer",
     "ResultsInterpretationReviewer",
+    "RxNorm_get_drug_names",
     "SCREEN_get_regulatory_elements",
     "ScientificTextSummarizer",
     "SemanticScholar_search_papers",
@@ -1567,6 +1670,9 @@ __all__ = [
     "WikiPathways_get_pathway",
     "WikiPathways_search",
     "Wikidata_SPARQL_query",
+    "Wikipedia_get_content",
+    "Wikipedia_get_summary",
+    "Wikipedia_search",
     "WoRMS_search_species",
     "WritingPresentationReviewer",
     "XMLToolOptimizer",
@@ -1620,7 +1726,6 @@ __all__ = [
     "dynamic_package_discovery",
     "embedding_database_add",
     "embedding_database_create",
-    "embedding_database_load",
     "embedding_database_search",
     "embedding_sync_download",
     "embedding_sync_upload",
@@ -1628,9 +1733,31 @@ __all__ = [
     "ensembl_get_sequence",
     "ensembl_get_variants",
     "ensembl_lookup_gene",
+    "euhealthinfo_deepdive",
+    "euhealthinfo_search_alcohol_tobacco_psychoactive_use",
+    "euhealthinfo_search_births",
+    "euhealthinfo_search_cancer",
+    "euhealthinfo_search_cancer_registry",
+    "euhealthinfo_search_causes_of_death",
+    "euhealthinfo_search_covid_19",
+    "euhealthinfo_search_deaths",
+    "euhealthinfo_search_diabetes_mellitus_epidemiology_registry",
+    "euhealthinfo_search_disability",
+    "euhealthinfo_search_healthcare_expenditure",
+    "euhealthinfo_search_hospital_in_patient_data",
+    "euhealthinfo_search_infectious_diseases",
+    "euhealthinfo_search_key_indicators_registries_surveys",
+    "euhealthinfo_search_mental_health",
+    "euhealthinfo_search_obesity",
+    "euhealthinfo_search_population_health_survey",
+    "euhealthinfo_search_primary_care_workforce",
+    "euhealthinfo_search_surveillance",
+    "euhealthinfo_search_surveillance_mortality_rates",
+    "euhealthinfo_search_vaccination",
     "europepmc_disease_target_score",
     "eva_disease_target_score",
     "eva_somatic_disease_target_score",
+    "execute_tool",
     "expression_atlas_disease_target_score",
     "extract_clinical_trial_adverse_events",
     "extract_clinical_trial_outcomes",
@@ -1838,6 +1965,7 @@ __all__ = [
     "get_taxonomy_by_pdb_id",
     "get_tiledb_info",
     "get_tiledbsoma_info",
+    "get_tool_info",
     "get_torch_geometric_info",
     "get_tqdm_info",
     "get_trackpy_info",
@@ -1852,7 +1980,9 @@ __all__ = [
     "get_xesmf_info",
     "get_xgboost_info",
     "get_zarr_info",
+    "ghost_tool",
     "gnomad_get_gene_constraints",
+    "grep_tools",
     "gwas_get_association_by_id",
     "gwas_get_associations_for_snp",
     "gwas_get_associations_for_study",
@@ -1866,11 +1996,14 @@ __all__ = [
     "gwas_search_snps",
     "gwas_search_studies",
     "humanbase_ppi_analysis",
+    "icd_search_codes",
     "kegg_find_genes",
     "kegg_get_gene_info",
     "kegg_get_pathway_info",
     "kegg_list_organisms",
     "kegg_search_pathway",
+    "list_tools",
+    "loinc_search_codes",
     "mesh_get_subjects_by_pharmacological_action",
     "mesh_get_subjects_by_subject_id",
     "mesh_get_subjects_by_subject_name",
@@ -1892,9 +2025,16 @@ __all__ = [
     "python_script_runner",
     "reactome_disease_target_score",
     "search_clinical_trials",
+    "snomed_search_concepts",
+    "test_decorator_tool",
+    "test_server_tool",
+    "umls_get_concept_details",
+    "umls_search_concepts",
     "visualize_molecule_2d",
     "visualize_molecule_3d",
     "visualize_protein_structure_3d",
     "web_api_documentation_search",
     "web_search",
+    "who_gho_get_data",
+    "who_gho_query_health_data",
 ]

@@ -9,7 +9,7 @@ from ._shared_client import get_shared_client
 
 
 def get_clinical_trial_references(
-    nct_ids: list[Any],
+    nct_ids: list[str],
     references: str,
     *,
     stream_callback: Optional[Callable[[str], None]] = None,
@@ -21,7 +21,7 @@ def get_clinical_trial_references(
 
     Parameters
     ----------
-    nct_ids : list[Any]
+    nct_ids : list[str]
         List of NCT IDs of the clinical trials (e.g., ['NCT04852770', 'NCT01728545']).
     references : str
         Placeholder.

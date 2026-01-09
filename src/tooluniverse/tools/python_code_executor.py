@@ -13,8 +13,8 @@ def python_code_executor(
     arguments: Optional[dict[str, Any]] = None,
     timeout: Optional[int] = 30,
     return_variable: Optional[str] = "result",
-    allowed_imports: Optional[list[Any]] = None,
-    dependencies: Optional[list[Any]] = None,
+    allowed_imports: Optional[list[str]] = None,
+    dependencies: Optional[list[str]] = None,
     auto_install_dependencies: Optional[bool] = False,
     require_confirmation: Optional[bool] = True,
     *,
@@ -35,9 +35,9 @@ def python_code_executor(
         Execution timeout in seconds
     return_variable : str
         Variable name to extract as result from the executed code
-    allowed_imports : list[Any]
+    allowed_imports : list[str]
         Additional allowed modules beyond the default safe set (math, json, datetime,...
-    dependencies : list[Any]
+    dependencies : list[str]
         List of Python packages that the code depends on. Will be checked and optiona...
     auto_install_dependencies : bool
         Whether to automatically install missing dependencies without user confirmation

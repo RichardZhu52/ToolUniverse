@@ -9,8 +9,8 @@ from ._shared_client import get_shared_client
 
 
 def extract_clinical_trial_adverse_events(
-    nct_ids: list[Any],
-    organ_systems: Optional[list[Any]] = None,
+    nct_ids: list[str],
+    organ_systems: Optional[list[str]] = None,
     adverse_event_type: Optional[str] = None,
     *,
     stream_callback: Optional[Callable[[str], None]] = None,
@@ -22,9 +22,9 @@ def extract_clinical_trial_adverse_events(
 
     Parameters
     ----------
-    nct_ids : list[Any]
+    nct_ids : list[str]
         List of NCT IDs of the clinical trials (e.g., ['NCT04852770', 'NCT01728545']).
-    organ_systems : list[Any]
+    organ_systems : list[str]
         List of organs or organ systems to filter adverse events (see enum for exact ...
     adverse_event_type : str
         Type of adverse events to extract. Options are 'serious' (serious adverse eve...

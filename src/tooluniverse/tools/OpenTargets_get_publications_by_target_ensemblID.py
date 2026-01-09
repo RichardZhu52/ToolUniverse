@@ -10,7 +10,7 @@ from ._shared_client import get_shared_client
 
 def OpenTargets_get_publications_by_target_ensemblID(
     entityId: str,
-    additionalIds: Optional[list[Any]] = None,
+    additionalIds: Optional[list[str]] = None,
     startYear: Optional[int] = None,
     startMonth: Optional[int] = None,
     endYear: Optional[int] = None,
@@ -27,7 +27,7 @@ def OpenTargets_get_publications_by_target_ensemblID(
     ----------
     entityId : str
         The ID of the entity (ensemblID).
-    additionalIds : list[Any]
+    additionalIds : list[str]
         List of additional IDs to include in the search.
     startYear : int
         Year at the lower end of the filter.

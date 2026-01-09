@@ -29,6 +29,11 @@ class TestMCPIntegrationEdgeCases(unittest.TestCase):
         self.tu = ToolUniverse()
         self.tu.load_tools()
     
+    def tearDown(self):
+        """Tear down test fixtures."""
+        if hasattr(self, 'tu'):
+            self.tu.close()
+    
     def test_mcp_server_connection_real(self):
         """Test real MCP server connection handling."""
         try:
@@ -477,6 +482,7 @@ class TestMCPIntegrationEdgeCases(unittest.TestCase):
             
             # Create a fresh ToolUniverse instance
             tu = ToolUniverse()
+            self.addCleanup(tu.close)
             
             auto_loader = MCPAutoLoaderTool({
                 "name": "integration_loader",

@@ -16,7 +16,13 @@ class TestVisualizationTools:
     def setup_method(self):
         """Set up test environment."""
         self.tu = ToolUniverse()
+        self.tu = ToolUniverse()
         self.tu.load_tools()
+
+    def teardown_method(self):
+        """Clean up test environment."""
+        if hasattr(self, 'tu') and self.tu:
+            self.tu.close()
 
     def test_visualization_tools_exist(self):
         """Test that visualization tools are registered."""

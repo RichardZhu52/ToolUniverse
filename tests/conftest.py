@@ -10,6 +10,25 @@ def _set_test_env() -> None:
     os.environ.setdefault("TOOLUNIVERSE_TESTING", "1")
 
 
+def pytest_sessionfinish(session, exitstatus):
+    """Cleanup cache managers at the end of test session."""
+    import gc
+    from tooluniverse.cache.result_cache_manager import ResultCacheManager
+    
+    # Force garbage collection to trigger __del__ methods
+    gc.collect()
+    
+    # Find and cleanup any remaining cache managers
+    for obj in gc.get_objects():
+        if isinstance(obj, ResultCacheManager):
+            try:
+                if hasattr(obj, '_worker_thread') and obj._worker_thread is not None:
+                    if obj._worker_thread.is_alive():
+                        obj.close()
+            except Exception:
+                pass
+
+
 def pytest_configure(config):
     """Configure pytest with custom markers."""
     config.addinivalue_line("markers", "slow: slow tests (deselect with -m 'not slow')")
@@ -61,7 +80,13 @@ def tooluniverse_instance():
     from tooluniverse import ToolUniverse
     tu = ToolUniverse()
     tu.load_tools()
-    return tu
+    yield tu
+    # Cleanup: ensure cache manager is properly closed
+    try:
+        if hasattr(tu, 'cache_manager'):
+            tu.cache_manager.close()
+    except Exception:
+        pass
 
 
 @pytest.fixture

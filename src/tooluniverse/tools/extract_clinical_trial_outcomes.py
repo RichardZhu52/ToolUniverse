@@ -9,7 +9,7 @@ from ._shared_client import get_shared_client
 
 
 def extract_clinical_trial_outcomes(
-    nct_ids: list[Any],
+    nct_ids: list[str],
     outcome_measure: Optional[str] = None,
     *,
     stream_callback: Optional[Callable[[str], None]] = None,
@@ -21,7 +21,7 @@ def extract_clinical_trial_outcomes(
 
     Parameters
     ----------
-    nct_ids : list[Any]
+    nct_ids : list[str]
         List of NCT IDs of the clinical trials (e.g., ['NCT04852770', 'NCT01728545']).
     outcome_measure : str
         Outcome measure to extract. Example values include 'primary' (primary outcome...

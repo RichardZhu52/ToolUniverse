@@ -151,7 +151,17 @@ Create the iterative chat loop with function calling:
                function_call="auto"
            )
            msg = resp.choices[0].message
-           messages.append(msg)
+           # NOTE:
+           # If the model decides to call a function, msg.content is typically None.
+           # The OpenAI API expects message content to be a string (not null), so
+           # coerce missing content to "" while preserving the function_call.
+           assistant_msg = {"role": "assistant", "content": msg.content or ""}
+           if msg.function_call:
+               assistant_msg["function_call"] = {
+                   "name": msg.function_call.name,
+                   "arguments": msg.function_call.arguments or "{}"
+               }
+           messages.append(assistant_msg)
 
            if msg.function_call:
                name = msg.function_call.name
@@ -417,7 +427,17 @@ Advanced Configuration
                function_call="auto"
            )
            msg = resp.choices[0].message
-           messages.append(msg)
+           # NOTE:
+           # If the model decides to call a function, msg.content is typically None.
+           # The OpenAI API expects message content to be a string (not null), so
+           # coerce missing content to "" while preserving the function_call.
+           assistant_msg = {"role": "assistant", "content": msg.content or ""}
+           if msg.function_call:
+               assistant_msg["function_call"] = {
+                   "name": msg.function_call.name,
+                   "arguments": msg.function_call.arguments or "{}"
+               }
+           messages.append(assistant_msg)
 
            if msg.function_call:
                name = msg.function_call.name

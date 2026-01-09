@@ -14,7 +14,7 @@ def UniProt_search(
     limit: Optional[int] = None,
     min_length: Optional[int] = None,
     max_length: Optional[int] = None,
-    fields: Optional[list[Any]] = None,
+    fields: Optional[list[str]] = None,
     *,
     stream_callback: Optional[Callable[[str], None]] = None,
     use_cache: bool = False,
@@ -35,7 +35,7 @@ def UniProt_search(
         Minimum sequence length. Auto-converts to 'length:[min TO *]' range query.
     max_length : int
         Maximum sequence length. Auto-converts to 'length:[* TO max]' range query.
-    fields : list[Any]
+    fields : list[str]
         List of field names to return (e.g., ['accession','gene_primary','length','or...
     stream_callback : Callable, optional
         Callback for streaming output

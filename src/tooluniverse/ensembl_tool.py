@@ -5,6 +5,7 @@ This tool provides access to the Ensembl genome browser database for gene
 lookup, sequence retrieval, variant information, and homology data.
 """
 
+import re
 import requests
 from typing import Dict, Any, Optional
 from .base_tool import BaseTool
@@ -62,6 +63,9 @@ class EnsemblRESTTool(BaseTool):
 class EnsemblLookupGene(EnsemblRESTTool):
     """Lookup gene information by ID or symbol."""
 
+    # Ensembl stable gene IDs look like ENSG00000139618
+    _GENE_ID_PATTERN = re.compile(r"^ENS[A-Z]*G[0-9]+$", re.IGNORECASE)
+
     def __init__(self, tool_config):
         super().__init__(tool_config)
         self.endpoint = "/lookup/id"
@@ -72,13 +76,19 @@ class EnsemblLookupGene(EnsemblRESTTool):
         if not gene_id:
             return {"status": "error", "error": "gene_id is required"}
 
-        # Ensembl API requires the ID in the URL path
-        endpoint = f"{self.endpoint}/{gene_id}"
-        params = {"expand": 1}
-
-        # Add species if specified
-        if "species" in arguments:
-            params["species"] = arguments["species"]
+        # Route to correct endpoint depending on whether we received a stable ID
+        # (e.g., ENSG...) or a gene symbol (e.g., KRAS).
+        is_stable_id = bool(self._GENE_ID_PATTERN.match(gene_id))
+        if is_stable_id:
+            endpoint = f"{self.endpoint}/{gene_id}"
+            params = {"expand": 1}
+            if "species" in arguments:
+                params["species"] = arguments["species"]
+        else:
+            # Lookup by symbol requires the species in the URL path; default to human
+            species = arguments.get("species", "homo_sapiens")
+            endpoint = f"/lookup/symbol/{species}/{gene_id}"
+            params = {"expand": 1}
 
         result = self._make_request(endpoint, params)
 

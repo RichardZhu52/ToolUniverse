@@ -113,7 +113,7 @@ def _discover_similar_tools(tool_description, call_tool):
             for i, result in enumerate(web_search_result.get("results", [])):
                 web_tools.append(
                     {
-                        "name": f"web_result_{i+1}",
+                        "name": f"web_result_{i + 1}",
                         "title": result.get("title", ""),
                         "url": result.get("url", ""),
                         "snippet": result.get("snippet", ""),
@@ -484,7 +484,7 @@ def _generate_tool_with_xml(tool_description, reference_info, call_tool):
         )
         if error_line > 0 and len(lines) >= error_line:
             for i in range(max(0, error_line - 3), min(len(lines), error_line + 3)):
-                print(f"Line {i+1}: {lines[i]}")
+                print(f"Line {i + 1}: {lines[i]}")
         raise RuntimeError(f"Failed to parse XML from UnifiedToolGenerator: {e}")
 
     # Extract code
@@ -690,7 +690,6 @@ def _optimize_tool_with_xml(tool_config, optimization_context, call_tool):
                 optimized_xml = result.get("data", "")
 
         if optimized_xml:
-
             # Parse optimized XML
             # Format: <code><![CDATA[...]]></code><spec><![CDATA[...]]></spec>
             optimized_xml = optimized_xml.strip()
@@ -1342,7 +1341,7 @@ def iterative_comprehensive_optimization(
     installed_packages = set()
 
     for iteration in range(max_iterations):
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print(f"🔄 Iteration {iteration + 1}/{max_iterations}")
 
         # Check and install dependencies
