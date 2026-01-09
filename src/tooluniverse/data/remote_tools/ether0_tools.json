@@ -1,0 +1,71 @@
+[
+  
+  {
+    "type": "RemoteTool",
+    "name": "ether0_reasoning",
+    "description": "Call the ether0 chemistry reasoning model (futurehouse/ether0) over MCP. Provide a chemistry question; receive reasoning and an answer parsed from the model's XML-style tags when present.",
+    "parameter": {
+      "type": "object",
+      "properties": {
+        "prompt": {
+          "type": "string",
+          "description": "Natural-language chemistry prompt (synthesis planning, reaction analysis, safety, etc.)."
+        },
+        "system_prompt": {
+          "type": "string",
+          "description": "Optional system instruction override; defaults to a chemistry-focused prompt that requests <|think|> and <|answer|> tags."
+        },
+        "max_new_tokens": {
+          "type": "integer",
+          "description": "Maximum new tokens to generate (default 512)."
+        },
+        "temperature": {
+          "type": "number",
+          "description": "Sampling temperature (default 0.2; 0 makes decoding greedy)."
+        },
+        "top_p": {
+          "type": "number",
+          "description": "Nucleus sampling probability (default 0.9)."
+        }
+      },
+      "required": [
+        "prompt"
+      ]
+    },
+    "return_schema": {
+      "type": "object",
+      "properties": {
+        "answer": {
+          "type": "string",
+          "description": "Parsed <|answer_start|>...<|answer_end|> content; falls back to the raw completion when parsing fails."
+        },
+        "thought": {
+          "type": "string",
+          "description": "Parsed <|think_start|>...<|think_end|> reasoning if emitted by the model."
+        },
+        "raw_completion": {
+          "type": "string",
+          "description": "Full decoded generation with prompt stripped off."
+        },
+        "context_info": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Metadata about the generation (model id, decoding params, parse notes)."
+        }
+      }
+    },
+    "required_api_keys": [
+      "ETHER0_MCP_SERVER_HOST"
+    ],
+    "remote_info": {
+      "server_type": "MCP",
+      "transport": "http",
+      "original_type": "MCPAutoLoaderTool",
+      "url": "https://zitniklab.hms.harvard.edu/ToolUniverse/expand_tooluniverse/remote/ether0.html",
+      "code_url": "https://github.com/mims-harvard/ToolUniverse/tree/main/src/tooluniverse/remote/ether0",
+      "mcp_tool_name": "ether0_reasoning"
+    }
+  }
+]

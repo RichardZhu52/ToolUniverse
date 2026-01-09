@@ -1,0 +1,9 @@
+[
+    {
+        "name": "mcp_auto_loader_ether0",
+        "description": "Load the ether0 chemistry MCP server (futurehouse/ether0) and register the ether0_reasoning tool for remote execution.",
+        "type": "MCPAutoLoaderTool",
+        "server_url": "http://${ETHER0_MCP_SERVER_HOST}/mcp",
+        "required_api_keys": ["ETHER0_MCP_SERVER_HOST"]
+    }
+]

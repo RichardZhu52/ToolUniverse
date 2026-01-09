@@ -7,6 +7,7 @@ This section aggregates setup guides for all integrations under ``src/tooluniver
    :maxdepth: 1
 
    remote/boltz.md
+   remote/ether0.md
    remote/depmap_24q2.md
    remote/expert_feedback.md
    remote/immune_compass.md
